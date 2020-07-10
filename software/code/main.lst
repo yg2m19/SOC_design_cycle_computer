@@ -1,0 +1,4221 @@
+ARM GAS  /tmp/cciGZpl2.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1	@ Tag_ABI_FP_denormal
+   5              		.eabi_attribute 21, 1	@ Tag_ABI_FP_exceptions
+   6              		.eabi_attribute 23, 3	@ Tag_ABI_FP_number_model
+   7              		.eabi_attribute 24, 1	@ Tag_ABI_align8_needed
+   8              		.eabi_attribute 25, 1	@ Tag_ABI_align8_preserved
+   9              		.eabi_attribute 26, 1	@ Tag_ABI_enum_size
+  10              		.eabi_attribute 30, 6	@ Tag_ABI_optimization_goals
+  11              		.eabi_attribute 34, 0	@ Tag_CPU_unaligned_access
+  12              		.eabi_attribute 18, 4	@ Tag_ABI_PCS_wchar_t
+  13              		.file	"main.c"
+  14              	@ GNU C11 (GNU Tools for ARM Embedded Processors) version 5.4.1 20160919 (release) [ARM/embedded-5-
+  15              	@	compiled by GNU C version 4.7.4, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1
+  16              	@ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+  17              	@ options passed:  -I . -I ./inc -imultilib armv6-m
+  18              	@ -iprefix /srv/gcc-arm-none-eabi-5_4-2016q3/bin/../lib/gcc/arm-none-eabi/5.4.1/
+  19              	@ -isysroot /srv/gcc-arm-none-eabi-5_4-2016q3/bin/../arm-none-eabi
+  20              	@ -MD code/main.d -MF .dep/main.o.d -MP -MQ code/main.o -D__USES_INITFINI__
+  21              	@ -D RUN_FROM_FLASH=1 code/main.c -mcpu=cortex-m0 -mthumb
+  22              	@ -auxbase-strip code/main.o -gdwarf-2 -O0 -Wall -Wstrict-prototypes
+  23              	@ -fomit-frame-pointer -fverbose-asm
+  24              	@ options enabled:  -faggressive-loop-optimizations -fauto-inc-dec
+  25              	@ -fchkp-check-incomplete-type -fchkp-check-read -fchkp-check-write
+  26              	@ -fchkp-instrument-calls -fchkp-narrow-bounds -fchkp-optimize
+  27              	@ -fchkp-store-bounds -fchkp-use-static-bounds
+  28              	@ -fchkp-use-static-const-bounds -fchkp-use-wrappers -fcommon
+  29              	@ -fdelete-null-pointer-checks -fdwarf2-cfi-asm -fearly-inlining
+  30              	@ -feliminate-unused-debug-types -ffunction-cse -fgcse-lm -fgnu-runtime
+  31              	@ -fgnu-unique -fident -finline-atomics -fira-hoist-pressure
+  32              	@ -fira-share-save-slots -fira-share-spill-slots -fivopts
+  33              	@ -fkeep-static-consts -fleading-underscore -flifetime-dse
+  34              	@ -flto-odr-type-merging -fmath-errno -fmerge-debug-strings
+  35              	@ -fomit-frame-pointer -fpeephole -fprefetch-loop-arrays
+  36              	@ -freg-struct-return -fsched-critical-path-heuristic
+  37              	@ -fsched-dep-count-heuristic -fsched-group-heuristic -fsched-interblock
+  38              	@ -fsched-last-insn-heuristic -fsched-rank-heuristic -fsched-spec
+  39              	@ -fsched-spec-insn-heuristic -fsched-stalled-insns-dep
+  40              	@ -fsemantic-interposition -fshow-column -fsigned-zeros
+  41              	@ -fsplit-ivs-in-unroller -fstdarg-opt -fstrict-volatile-bitfields
+  42              	@ -fsync-libcalls -ftrapping-math -ftree-coalesce-vars -ftree-cselim
+  43              	@ -ftree-forwprop -ftree-loop-if-convert -ftree-loop-im -ftree-loop-ivcanon
+  44              	@ -ftree-loop-optimize -ftree-parallelize-loops= -ftree-phiprop
+  45              	@ -ftree-reassoc -ftree-scev-cprop -funit-at-a-time -fverbose-asm
+  46              	@ -fzero-initialized-in-bss -mlittle-endian -mpic-data-is-text-relative
+  47              	@ -msched-prolog -mthumb -mvectorize-with-neon-quad
+  48              	
+  49              		.text
+  50              	.Ltext0:
+  51              		.cfi_sections	.debug_frame
+  52              		.global	SW_REGS
+  53              		.data
+  54              		.align	2
+  55              		.type	SW_REGS, %object
+  56              		.size	SW_REGS, 4
+  57              	SW_REGS:
+ARM GAS  /tmp/cciGZpl2.s 			page 2
+
+
+  58 0000 00000040 		.word	1073741824
+  59              		.global	OUT_REGS
+  60              		.align	2
+  61              		.type	OUT_REGS, %object
+  62              		.size	OUT_REGS, 4
+  63              	OUT_REGS:
+  64 0004 00000050 		.word	1342177280
+  65              		.text
+  66              		.align	2
+  67              		.global	write_out
+  68              		.code	16
+  69              		.thumb_func
+  70              		.type	write_out, %function
+  71              	write_out:
+  72              	.LFB0:
+  73              		.file 1 "code/main.c"
+   1:code/main.c   **** #include <stdint.h>
+   2:code/main.c   **** #include <stdbool.h>
+   3:code/main.c   **** 
+   4:code/main.c   **** #define AHB_SW_BASE        0x40000000
+   5:code/main.c   **** #define AHB_OUT_BASE       0x50000000
+   6:code/main.c   **** 
+   7:code/main.c   **** // The locations in the devices can then be accessed as:
+   8:code/main.c   **** //    SW_REGS[0]   count of TRIP
+   9:code/main.c   **** //    SW_REGS[1]   count of MODE
+  10:code/main.c   **** //    SW_REGS[2]   count of fork
+  11:code/main.c   **** //    SW_REGS[3]   count of total time
+  12:code/main.c   **** //    SW_REGS[4]   count of time per cycle of crank
+  13:code/main.c   **** //    SW_REGS[5]   count of time per cycle of fork
+  14:code/main.c   **** //    SW_REGS[6]   status
+  15:code/main.c   **** //    OUT_REGS[0]  data output
+  16:code/main.c   **** //    OUT_REGS[1]  status
+  17:code/main.c   **** 
+  18:code/main.c   **** volatile uint32_t* SW_REGS = (volatile uint32_t*) AHB_SW_BASE;
+  19:code/main.c   **** volatile uint32_t* OUT_REGS = (volatile uint32_t*) AHB_OUT_BASE;
+  20:code/main.c   **** 
+  21:code/main.c   **** #include <stdint.h>
+  22:code/main.c   **** 
+  23:code/main.c   **** void write_out(uint32_t value) {
+  74              		.loc 1 23 0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 8
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+  79 0000 82B0     		sub	sp, sp, #8	@,,
+  80              	.LCFI0:
+  81              		.cfi_def_cfa_offset 8
+  82 0002 0190     		str	r0, [sp, #4]	@ value, value
+  24:code/main.c   **** OUT_REGS[1]=1;
+  83              		.loc 1 24 0
+  84 0004 054B     		ldr	r3, .L2	@ tmp113,
+  85 0006 1B68     		ldr	r3, [r3]	@ D.4812, OUT_REGS
+  86 0008 0433     		adds	r3, r3, #4	@ D.4812,
+  87 000a 0122     		movs	r2, #1	@ tmp114,
+  88 000c 1A60     		str	r2, [r3]	@ tmp114, *_3
+  25:code/main.c   **** OUT_REGS[0]=value;
+  89              		.loc 1 25 0
+ARM GAS  /tmp/cciGZpl2.s 			page 3
+
+
+  90 000e 034B     		ldr	r3, .L2	@ tmp115,
+  91 0010 1B68     		ldr	r3, [r3]	@ D.4812, OUT_REGS
+  92 0012 019A     		ldr	r2, [sp, #4]	@ tmp116, value
+  93 0014 1A60     		str	r2, [r3]	@ tmp116, *_5
+  26:code/main.c   **** }
+  94              		.loc 1 26 0
+  95 0016 C046     		nop
+  96 0018 02B0     		add	sp, sp, #8	@,,
+  97              		@ sp needed	@
+  98 001a 7047     		bx	lr
+  99              	.L3:
+ 100              		.align	2
+ 101              	.L2:
+ 102 001c 00000000 		.word	OUT_REGS
+ 103              		.cfi_endproc
+ 104              	.LFE0:
+ 105              		.size	write_out, .-write_out
+ 106              		.align	2
+ 107              		.global	read_out
+ 108              		.code	16
+ 109              		.thumb_func
+ 110              		.type	read_out, %function
+ 111              	read_out:
+ 112              	.LFB1:
+  27:code/main.c   **** 
+  28:code/main.c   **** uint32_t read_out(void){
+ 113              		.loc 1 28 0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 0
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117              		@ link register save eliminated.
+  29:code/main.c   **** return OUT_REGS[0];
+ 118              		.loc 1 29 0
+ 119 0020 024B     		ldr	r3, .L6	@ tmp113,
+ 120 0022 1B68     		ldr	r3, [r3]	@ D.4813, OUT_REGS
+ 121 0024 1B68     		ldr	r3, [r3]	@ D.4814, *_2
+  30:code/main.c   **** }
+ 122              		.loc 1 30 0
+ 123 0026 1800     		movs	r0, r3	@, <retval>
+ 124              		@ sp needed	@
+ 125 0028 7047     		bx	lr
+ 126              	.L7:
+ 127 002a C046     		.align	2
+ 128              	.L6:
+ 129 002c 00000000 		.word	OUT_REGS
+ 130              		.cfi_endproc
+ 131              	.LFE1:
+ 132              		.size	read_out, .-read_out
+ 133              		.align	2
+ 134              		.global	read_switches
+ 135              		.code	16
+ 136              		.thumb_func
+ 137              		.type	read_switches, %function
+ 138              	read_switches:
+ 139              	.LFB2:
+  31:code/main.c   **** 
+  32:code/main.c   **** uint32_t read_switches(int addr){
+ARM GAS  /tmp/cciGZpl2.s 			page 4
+
+
+ 140              		.loc 1 32 0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 8
+ 143              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144              		@ link register save eliminated.
+ 145 0030 82B0     		sub	sp, sp, #8	@,,
+ 146              	.LCFI1:
+ 147              		.cfi_def_cfa_offset 8
+ 148 0032 0190     		str	r0, [sp, #4]	@ addr, addr
+  33:code/main.c   **** return SW_REGS[addr];
+ 149              		.loc 1 33 0
+ 150 0034 044B     		ldr	r3, .L10	@ tmp116,
+ 151 0036 1A68     		ldr	r2, [r3]	@ D.4815, SW_REGS
+ 152 0038 019B     		ldr	r3, [sp, #4]	@ D.4816, addr
+ 153 003a 9B00     		lsls	r3, r3, #2	@ D.4816, D.4816,
+ 154 003c D318     		adds	r3, r2, r3	@ D.4815, D.4815, D.4816
+ 155 003e 1B68     		ldr	r3, [r3]	@ D.4817, *_6
+  34:code/main.c   **** }
+ 156              		.loc 1 34 0
+ 157 0040 1800     		movs	r0, r3	@, <retval>
+ 158 0042 02B0     		add	sp, sp, #8	@,,
+ 159              		@ sp needed	@
+ 160 0044 7047     		bx	lr
+ 161              	.L11:
+ 162 0046 C046     		.align	2
+ 163              	.L10:
+ 164 0048 00000000 		.word	SW_REGS
+ 165              		.cfi_endproc
+ 166              	.LFE2:
+ 167              		.size	read_switches, .-read_switches
+ 168              		.align	2
+ 169              		.global	delay_1s
+ 170              		.code	16
+ 171              		.thumb_func
+ 172              		.type	delay_1s, %function
+ 173              	delay_1s:
+ 174              	.LFB3:
+  35:code/main.c   **** ////////////////////////////////////////////////////////////////////////////
+  36:code/main.c   **** ////delay approximate 1 second(frequcncy is 12.8 kHz)
+  37:code/main.c   **** ////////////////////////////////////////////////////////////////////////////
+  38:code/main.c   **** void delay_1s(void)
+  39:code/main.c   **** {
+ 175              		.loc 1 39 0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 8
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179              		@ link register save eliminated.
+ 180 004c 82B0     		sub	sp, sp, #8	@,,
+ 181              	.LCFI2:
+ 182              		.cfi_def_cfa_offset 8
+  40:code/main.c   **** int i,j;
+  41:code/main.c   **** for(i=20;i>0;i--){
+ 183              		.loc 1 41 0
+ 184 004e 1423     		movs	r3, #20	@ tmp110,
+ 185 0050 0193     		str	r3, [sp, #4]	@ tmp110, i
+ 186 0052 0BE0     		b	.L13	@
+ 187              	.L16:
+ARM GAS  /tmp/cciGZpl2.s 			page 5
+
+
+  42:code/main.c   **** for(j=35;j>0;j--);
+ 188              		.loc 1 42 0
+ 189 0054 2323     		movs	r3, #35	@ tmp111,
+ 190 0056 0093     		str	r3, [sp]	@ tmp111, j
+ 191 0058 02E0     		b	.L14	@
+ 192              	.L15:
+ 193              		.loc 1 42 0 is_stmt 0 discriminator 3
+ 194 005a 009B     		ldr	r3, [sp]	@ tmp113, j
+ 195 005c 013B     		subs	r3, r3, #1	@ tmp112,
+ 196 005e 0093     		str	r3, [sp]	@ tmp112, j
+ 197              	.L14:
+ 198              		.loc 1 42 0 discriminator 1
+ 199 0060 009B     		ldr	r3, [sp]	@ tmp114, j
+ 200 0062 002B     		cmp	r3, #0	@ tmp114,
+ 201 0064 F9DC     		bgt	.L15	@,
+  41:code/main.c   **** for(j=35;j>0;j--);
+ 202              		.loc 1 41 0 is_stmt 1 discriminator 2
+ 203 0066 019B     		ldr	r3, [sp, #4]	@ tmp116, i
+ 204 0068 013B     		subs	r3, r3, #1	@ tmp115,
+ 205 006a 0193     		str	r3, [sp, #4]	@ tmp115, i
+ 206              	.L13:
+  41:code/main.c   **** for(j=35;j>0;j--);
+ 207              		.loc 1 41 0 is_stmt 0 discriminator 1
+ 208 006c 019B     		ldr	r3, [sp, #4]	@ tmp117, i
+ 209 006e 002B     		cmp	r3, #0	@ tmp117,
+ 210 0070 F0DC     		bgt	.L16	@,
+  43:code/main.c   **** }
+  44:code/main.c   **** }
+ 211              		.loc 1 44 0 is_stmt 1
+ 212 0072 C046     		nop
+ 213 0074 02B0     		add	sp, sp, #8	@,,
+ 214              		@ sp needed	@
+ 215 0076 7047     		bx	lr
+ 216              		.cfi_endproc
+ 217              	.LFE3:
+ 218              		.size	delay_1s, .-delay_1s
+ 219              		.global	__aeabi_idiv
+ 220              		.align	2
+ 221              		.global	distance
+ 222              		.code	16
+ 223              		.thumb_func
+ 224              		.type	distance, %function
+ 225              	distance:
+ 226              	.LFB4:
+  45:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  46:code/main.c   **** ////Function of distance
+  47:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  48:code/main.c   **** int distance(int count_fork,int circumference){
+ 227              		.loc 1 48 0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 16
+ 230              		@ frame_needed = 0, uses_anonymous_args = 0
+ 231 0078 00B5     		push	{lr}	@
+ 232              	.LCFI3:
+ 233              		.cfi_def_cfa_offset 4
+ 234              		.cfi_offset 14, -4
+ 235 007a 85B0     		sub	sp, sp, #20	@,,
+ARM GAS  /tmp/cciGZpl2.s 			page 6
+
+
+ 236              	.LCFI4:
+ 237              		.cfi_def_cfa_offset 24
+ 238 007c 0190     		str	r0, [sp, #4]	@ count_fork, count_fork
+ 239 007e 0091     		str	r1, [sp]	@ circumference, circumference
+  49:code/main.c   **** int value;
+  50:code/main.c   **** int result;
+  51:code/main.c   **** value = count_fork*circumference*10/1000000;
+ 240              		.loc 1 51 0
+ 241 0080 019B     		ldr	r3, [sp, #4]	@ tmp114, count_fork
+ 242 0082 009A     		ldr	r2, [sp]	@ tmp115, circumference
+ 243 0084 5A43     		muls	r2, r3	@ D.4818, tmp114
+ 244 0086 1300     		movs	r3, r2	@ tmp116, D.4818
+ 245 0088 9B00     		lsls	r3, r3, #2	@ tmp116, tmp116,
+ 246 008a 9B18     		adds	r3, r3, r2	@ tmp116, tmp116, D.4818
+ 247 008c 5B00     		lsls	r3, r3, #1	@ tmp117, tmp116,
+ 248 008e 0849     		ldr	r1, .L19	@,
+ 249 0090 1800     		movs	r0, r3	@, D.4818
+ 250 0092 FFF7FEFF 		bl	__aeabi_idiv	@
+ 251 0096 0300     		movs	r3, r0	@ tmp120,
+ 252 0098 0393     		str	r3, [sp, #12]	@ tmp120, value
+  52:code/main.c   **** result=value+1073741824;                      //high 3 digits are 010
+ 253              		.loc 1 52 0
+ 254 009a 039B     		ldr	r3, [sp, #12]	@ tmp122, value
+ 255 009c 8022     		movs	r2, #128	@ tmp124,
+ 256 009e D205     		lsls	r2, r2, #23	@ tmp124, tmp124,
+ 257 00a0 9446     		mov	ip, r2	@ tmp124, tmp124
+ 258 00a2 6344     		add	r3, r3, ip	@ tmp121, tmp124
+ 259 00a4 0293     		str	r3, [sp, #8]	@ tmp121, result
+  53:code/main.c   **** return(result);
+ 260              		.loc 1 53 0
+ 261 00a6 029B     		ldr	r3, [sp, #8]	@ D.4818, result
+  54:code/main.c   **** }
+ 262              		.loc 1 54 0
+ 263 00a8 1800     		movs	r0, r3	@, <retval>
+ 264 00aa 05B0     		add	sp, sp, #20	@,,
+ 265              		@ sp needed	@
+ 266 00ac 00BD     		pop	{pc}
+ 267              	.L20:
+ 268 00ae C046     		.align	2
+ 269              	.L19:
+ 270 00b0 40420F00 		.word	1000000
+ 271              		.cfi_endproc
+ 272              	.LFE4:
+ 273              		.size	distance, .-distance
+ 274              		.align	2
+ 275              		.global	timer
+ 276              		.code	16
+ 277              		.thumb_func
+ 278              		.type	timer, %function
+ 279              	timer:
+ 280              	.LFB5:
+  55:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  56:code/main.c   **** ////Function of timer
+  57:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  58:code/main.c   **** int timer(int count_of_total_time){
+ 281              		.loc 1 58 0
+ 282              		.cfi_startproc
+ARM GAS  /tmp/cciGZpl2.s 			page 7
+
+
+ 283              		@ args = 0, pretend = 0, frame = 24
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285 00b4 00B5     		push	{lr}	@
+ 286              	.LCFI5:
+ 287              		.cfi_def_cfa_offset 4
+ 288              		.cfi_offset 14, -4
+ 289 00b6 87B0     		sub	sp, sp, #28	@,,
+ 290              	.LCFI6:
+ 291              		.cfi_def_cfa_offset 32
+ 292 00b8 0190     		str	r0, [sp, #4]	@ count_of_total_time, count_of_total_time
+  59:code/main.c   **** int value;
+  60:code/main.c   **** int result;
+  61:code/main.c   **** int time_h;
+  62:code/main.c   **** int time_min;
+  63:code/main.c   **** time_h=count_of_total_time/(3600*12800);
+ 293              		.loc 1 63 0
+ 294 00ba 019B     		ldr	r3, [sp, #4]	@ tmp116, count_of_total_time
+ 295 00bc 1049     		ldr	r1, .L23	@,
+ 296 00be 1800     		movs	r0, r3	@, tmp116
+ 297 00c0 FFF7FEFF 		bl	__aeabi_idiv	@
+ 298 00c4 0300     		movs	r3, r0	@ tmp119,
+ 299 00c6 0593     		str	r3, [sp, #20]	@ tmp119, time_h
+  64:code/main.c   **** time_min=(count_of_total_time-time_h*3600*12800)/(60*12800);
+ 300              		.loc 1 64 0
+ 301 00c8 059B     		ldr	r3, [sp, #20]	@ tmp120, time_h
+ 302 00ca 0E4A     		ldr	r2, .L23+4	@ tmp121,
+ 303 00cc 5A43     		muls	r2, r3	@ D.4819, tmp120
+ 304 00ce 019B     		ldr	r3, [sp, #4]	@ tmp122, count_of_total_time
+ 305 00d0 D318     		adds	r3, r2, r3	@ D.4819, D.4819, tmp122
+ 306 00d2 0D49     		ldr	r1, .L23+8	@,
+ 307 00d4 1800     		movs	r0, r3	@, D.4819
+ 308 00d6 FFF7FEFF 		bl	__aeabi_idiv	@
+ 309 00da 0300     		movs	r3, r0	@ tmp125,
+ 310 00dc 0493     		str	r3, [sp, #16]	@ tmp125, time_min
+  65:code/main.c   **** value =time_h*100+time_min;
+ 311              		.loc 1 65 0
+ 312 00de 059B     		ldr	r3, [sp, #20]	@ tmp126, time_h
+ 313 00e0 6422     		movs	r2, #100	@ tmp127,
+ 314 00e2 5A43     		muls	r2, r3	@ D.4819, tmp126
+ 315 00e4 049B     		ldr	r3, [sp, #16]	@ tmp129, time_min
+ 316 00e6 D318     		adds	r3, r2, r3	@ tmp128, D.4819, tmp129
+ 317 00e8 0393     		str	r3, [sp, #12]	@ tmp128, value
+  66:code/main.c   **** result=value+1610612736;                      //high 3 digits are 011
+ 318              		.loc 1 66 0
+ 319 00ea 039B     		ldr	r3, [sp, #12]	@ tmp131, value
+ 320 00ec C022     		movs	r2, #192	@ tmp133,
+ 321 00ee D205     		lsls	r2, r2, #23	@ tmp133, tmp133,
+ 322 00f0 9446     		mov	ip, r2	@ tmp133, tmp133
+ 323 00f2 6344     		add	r3, r3, ip	@ tmp130, tmp133
+ 324 00f4 0293     		str	r3, [sp, #8]	@ tmp130, result
+  67:code/main.c   **** return(result);
+ 325              		.loc 1 67 0
+ 326 00f6 029B     		ldr	r3, [sp, #8]	@ D.4819, result
+  68:code/main.c   **** }
+ 327              		.loc 1 68 0
+ 328 00f8 1800     		movs	r0, r3	@, <retval>
+ 329 00fa 07B0     		add	sp, sp, #28	@,,
+ARM GAS  /tmp/cciGZpl2.s 			page 8
+
+
+ 330              		@ sp needed	@
+ 331 00fc 00BD     		pop	{pc}
+ 332              	.L24:
+ 333 00fe C046     		.align	2
+ 334              	.L23:
+ 335 0100 0020BF02 		.word	46080000
+ 336 0104 00E040FD 		.word	-46080000
+ 337 0108 00B80B00 		.word	768000
+ 338              		.cfi_endproc
+ 339              	.LFE5:
+ 340              		.size	timer, .-timer
+ 341              		.align	2
+ 342              		.global	rpm
+ 343              		.code	16
+ 344              		.thumb_func
+ 345              		.type	rpm, %function
+ 346              	rpm:
+ 347              	.LFB6:
+  69:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  70:code/main.c   **** ////Function of rpm
+  71:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  72:code/main.c   **** int rpm(int switch_count_of_time_per_cycle_of_crank){
+ 348              		.loc 1 72 0
+ 349              		.cfi_startproc
+ 350              		@ args = 0, pretend = 0, frame = 16
+ 351              		@ frame_needed = 0, uses_anonymous_args = 0
+ 352 010c 00B5     		push	{lr}	@
+ 353              	.LCFI7:
+ 354              		.cfi_def_cfa_offset 4
+ 355              		.cfi_offset 14, -4
+ 356 010e 85B0     		sub	sp, sp, #20	@,,
+ 357              	.LCFI8:
+ 358              		.cfi_def_cfa_offset 24
+ 359 0110 0190     		str	r0, [sp, #4]	@ switch_count_of_time_per_cycle_of_crank, switch_count_of_time_per_cycle_of_cran
+  73:code/main.c   **** int value;
+  74:code/main.c   **** int result;
+  75:code/main.c   **** if(60*12800/switch_count_of_time_per_cycle_of_crank==0){
+ 360              		.loc 1 75 0
+ 361 0112 0199     		ldr	r1, [sp, #4]	@, switch_count_of_time_per_cycle_of_crank
+ 362 0114 0B48     		ldr	r0, .L28	@,
+ 363 0116 FFF7FEFF 		bl	__aeabi_idiv	@
+ 364 011a 031E     		subs	r3, r0, #0	@ tmp117,,
+ 365 011c 02D1     		bne	.L26	@,
+  76:code/main.c   **** return(2147483648);
+ 366              		.loc 1 76 0
+ 367 011e 8023     		movs	r3, #128	@ tmp123,
+ 368 0120 1B06     		lsls	r3, r3, #24	@ D.4820, tmp123,
+ 369 0122 0CE0     		b	.L27	@
+ 370              	.L26:
+  77:code/main.c   **** }
+  78:code/main.c   **** else{
+  79:code/main.c   **** value=60*12800/switch_count_of_time_per_cycle_of_crank;
+ 371              		.loc 1 79 0
+ 372 0124 0199     		ldr	r1, [sp, #4]	@, switch_count_of_time_per_cycle_of_crank
+ 373 0126 0748     		ldr	r0, .L28	@,
+ 374 0128 FFF7FEFF 		bl	__aeabi_idiv	@
+ 375 012c 0300     		movs	r3, r0	@ tmp121,
+ARM GAS  /tmp/cciGZpl2.s 			page 9
+
+
+ 376 012e 0393     		str	r3, [sp, #12]	@ tmp121, value
+  80:code/main.c   **** result=value+2147483648;                   //high 3 digits are 100
+ 377              		.loc 1 80 0
+ 378 0130 039B     		ldr	r3, [sp, #12]	@ D.4821, value
+ 379 0132 8022     		movs	r2, #128	@ tmp124,
+ 380 0134 1206     		lsls	r2, r2, #24	@ tmp124, tmp124,
+ 381 0136 9446     		mov	ip, r2	@ tmp124, tmp124
+ 382 0138 6344     		add	r3, r3, ip	@ D.4821, tmp124
+ 383 013a 0293     		str	r3, [sp, #8]	@ D.4821, result
+  81:code/main.c   **** return(result);
+ 384              		.loc 1 81 0
+ 385 013c 029B     		ldr	r3, [sp, #8]	@ D.4820, result
+ 386              	.L27:
+  82:code/main.c   **** }
+  83:code/main.c   **** }
+ 387              		.loc 1 83 0
+ 388 013e 1800     		movs	r0, r3	@, <retval>
+ 389 0140 05B0     		add	sp, sp, #20	@,,
+ 390              		@ sp needed	@
+ 391 0142 00BD     		pop	{pc}
+ 392              	.L29:
+ 393              		.align	2
+ 394              	.L28:
+ 395 0144 00B80B00 		.word	768000
+ 396              		.cfi_endproc
+ 397              	.LFE6:
+ 398              		.size	rpm, .-rpm
+ 399              		.align	2
+ 400              		.global	current_speed_function
+ 401              		.code	16
+ 402              		.thumb_func
+ 403              		.type	current_speed_function, %function
+ 404              	current_speed_function:
+ 405              	.LFB7:
+  84:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  85:code/main.c   **** ////Fuction of current_speed
+  86:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+  87:code/main.c   **** int current_speed_function(int switch_count_of_time_per_cycle_of_fork, int circumference){
+ 406              		.loc 1 87 0
+ 407              		.cfi_startproc
+ 408              		@ args = 0, pretend = 0, frame = 32
+ 409              		@ frame_needed = 0, uses_anonymous_args = 0
+ 410 0148 00B5     		push	{lr}	@
+ 411              	.LCFI9:
+ 412              		.cfi_def_cfa_offset 4
+ 413              		.cfi_offset 14, -4
+ 414 014a 89B0     		sub	sp, sp, #36	@,,
+ 415              	.LCFI10:
+ 416              		.cfi_def_cfa_offset 40
+ 417 014c 0190     		str	r0, [sp, #4]	@ switch_count_of_time_per_cycle_of_fork, switch_count_of_time_per_cycle_of_fork
+ 418 014e 0091     		str	r1, [sp]	@ circumference, circumference
+  88:code/main.c   **** int speed_int, speed_fraction, cycle_per_hour;
+  89:code/main.c   **** int value, result;
+  90:code/main.c   **** if(switch_count_of_time_per_cycle_of_fork==0){
+ 419              		.loc 1 90 0
+ 420 0150 019B     		ldr	r3, [sp, #4]	@ tmp119, switch_count_of_time_per_cycle_of_fork
+ 421 0152 002B     		cmp	r3, #0	@ tmp119,
+ARM GAS  /tmp/cciGZpl2.s 			page 10
+
+
+ 422 0154 04D1     		bne	.L31	@,
+  91:code/main.c   ****                      speed_int=0;
+ 423              		.loc 1 91 0
+ 424 0156 0023     		movs	r3, #0	@ tmp120,
+ 425 0158 0793     		str	r3, [sp, #28]	@ tmp120, speed_int
+  92:code/main.c   ****         	     speed_fraction=0;
+ 426              		.loc 1 92 0
+ 427 015a 0023     		movs	r3, #0	@ tmp121,
+ 428 015c 0693     		str	r3, [sp, #24]	@ tmp121, speed_fraction
+ 429 015e 1BE0     		b	.L32	@
+ 430              	.L31:
+  93:code/main.c   **** 		     }
+  94:code/main.c   **** else{
+  95:code/main.c   ****                      cycle_per_hour=460800000/switch_count_of_time_per_cycle_of_fork;
+ 431              		.loc 1 95 0
+ 432 0160 0199     		ldr	r1, [sp, #4]	@, switch_count_of_time_per_cycle_of_fork
+ 433 0162 1748     		ldr	r0, .L34	@,
+ 434 0164 FFF7FEFF 		bl	__aeabi_idiv	@
+ 435 0168 0300     		movs	r3, r0	@ tmp125,
+ 436 016a 0593     		str	r3, [sp, #20]	@ tmp125, cycle_per_hour
+  96:code/main.c   ****                      speed_int=(circumference*cycle_per_hour/1000000)/10;
+ 437              		.loc 1 96 0
+ 438 016c 009B     		ldr	r3, [sp]	@ tmp126, circumference
+ 439 016e 059A     		ldr	r2, [sp, #20]	@ tmp127, cycle_per_hour
+ 440 0170 5343     		muls	r3, r2	@ D.4822, tmp127
+ 441 0172 1449     		ldr	r1, .L34+4	@,
+ 442 0174 1800     		movs	r0, r3	@, D.4822
+ 443 0176 FFF7FEFF 		bl	__aeabi_idiv	@
+ 444 017a 0300     		movs	r3, r0	@ tmp130,
+ 445 017c 0793     		str	r3, [sp, #28]	@ tmp130, speed_int
+  97:code/main.c   ****                      speed_fraction=((circumference*cycle_per_hour)-speed_int*10000000)/1000000;
+ 446              		.loc 1 97 0
+ 447 017e 009B     		ldr	r3, [sp]	@ tmp131, circumference
+ 448 0180 059A     		ldr	r2, [sp, #20]	@ tmp132, cycle_per_hour
+ 449 0182 5A43     		muls	r2, r3	@ D.4822, tmp131
+ 450 0184 079B     		ldr	r3, [sp, #28]	@ tmp133, speed_int
+ 451 0186 1049     		ldr	r1, .L34+8	@ tmp134,
+ 452 0188 4B43     		muls	r3, r1	@ D.4822, tmp134
+ 453 018a D318     		adds	r3, r2, r3	@ D.4822, D.4822, D.4822
+ 454 018c 0F49     		ldr	r1, .L34+12	@,
+ 455 018e 1800     		movs	r0, r3	@, D.4822
+ 456 0190 FFF7FEFF 		bl	__aeabi_idiv	@
+ 457 0194 0300     		movs	r3, r0	@ tmp137,
+ 458 0196 0693     		str	r3, [sp, #24]	@ tmp137, speed_fraction
+ 459              	.L32:
+  98:code/main.c   **** }
+  99:code/main.c   **** value=speed_int*10+speed_fraction;
+ 460              		.loc 1 99 0
+ 461 0198 079A     		ldr	r2, [sp, #28]	@ tmp138, speed_int
+ 462 019a 1300     		movs	r3, r2	@ tmp139, tmp138
+ 463 019c 9B00     		lsls	r3, r3, #2	@ tmp139, tmp139,
+ 464 019e 9B18     		adds	r3, r3, r2	@ tmp139, tmp139, tmp138
+ 465 01a0 5B00     		lsls	r3, r3, #1	@ tmp140, tmp139,
+ 466 01a2 1A00     		movs	r2, r3	@ D.4822, tmp139
+ 467 01a4 069B     		ldr	r3, [sp, #24]	@ tmp142, speed_fraction
+ 468 01a6 D318     		adds	r3, r2, r3	@ tmp141, D.4822, tmp142
+ 469 01a8 0493     		str	r3, [sp, #16]	@ tmp141, value
+ARM GAS  /tmp/cciGZpl2.s 			page 11
+
+
+ 100:code/main.c   **** result= value+2147483648+536870912;         //high 3 digits are 101
+ 470              		.loc 1 100 0
+ 471 01aa 049B     		ldr	r3, [sp, #16]	@ D.4823, value
+ 472 01ac A022     		movs	r2, #160	@ tmp144,
+ 473 01ae 1206     		lsls	r2, r2, #24	@ tmp144, tmp144,
+ 474 01b0 9446     		mov	ip, r2	@ tmp144, tmp144
+ 475 01b2 6344     		add	r3, r3, ip	@ D.4823, tmp144
+ 476 01b4 0393     		str	r3, [sp, #12]	@ D.4823, result
+ 101:code/main.c   **** return (result);
+ 477              		.loc 1 101 0
+ 478 01b6 039B     		ldr	r3, [sp, #12]	@ D.4822, result
+ 102:code/main.c   **** }		     
+ 479              		.loc 1 102 0
+ 480 01b8 1800     		movs	r0, r3	@, <retval>
+ 481 01ba 09B0     		add	sp, sp, #36	@,,
+ 482              		@ sp needed	@
+ 483 01bc 00BD     		pop	{pc}
+ 484              	.L35:
+ 485 01be C046     		.align	2
+ 486              	.L34:
+ 487 01c0 0040771B 		.word	460800000
+ 488 01c4 80969800 		.word	10000000
+ 489 01c8 806967FF 		.word	-10000000
+ 490 01cc 40420F00 		.word	1000000
+ 491              		.cfi_endproc
+ 492              	.LFE7:
+ 493              		.size	current_speed_function, .-current_speed_function
+ 494              		.align	2
+ 495              		.global	main
+ 496              		.code	16
+ 497              		.thumb_func
+ 498              		.type	main, %function
+ 499              	main:
+ 500              	.LFB8:
+ 103:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+ 104:code/main.c   **** //// Main Function for(i/o)
+ 105:code/main.c   **** ///////////////////////////////////////////////////////////////////////////
+ 106:code/main.c   **** 
+ 107:code/main.c   **** int main(void){
+ 501              		.loc 1 107 0
+ 502              		.cfi_startproc
+ 503              		@ args = 0, pretend = 0, frame = 88
+ 504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 505 01d0 10B5     		push	{r4, lr}	@
+ 506              	.LCFI11:
+ 507              		.cfi_def_cfa_offset 8
+ 508              		.cfi_offset 4, -8
+ 509              		.cfi_offset 14, -4
+ 510 01d2 96B0     		sub	sp, sp, #88	@,,
+ 511              	.LCFI12:
+ 512              		.cfi_def_cfa_offset 96
+ 108:code/main.c   **** int button_trip, button_mode;
+ 109:code/main.c   **** int state;
+ 110:code/main.c   **** int priority;
+ 111:code/main.c   **** int switch_count_of_fork, circumference, switch_count_of_total_time, switch_count_of_time_per_cycle
+ 112:code/main.c   **** int bit;
+ 113:code/main.c   **** int digit;
+ARM GAS  /tmp/cciGZpl2.s 			page 12
+
+
+ 114:code/main.c   **** int press_mode, press_trip;
+ 115:code/main.c   **** int press_two_button;
+ 116:code/main.c   **** int bit_0_digit, bit_1_digit, bit_2_digit, bit_3_digit;
+ 117:code/main.c   **** int speed_of_current;
+ 118:code/main.c   **** state=0;
+ 513              		.loc 1 118 0
+ 514 01d4 0023     		movs	r3, #0	@ tmp470,
+ 515 01d6 1593     		str	r3, [sp, #84]	@ tmp470, state
+ 119:code/main.c   **** priority=0;
+ 516              		.loc 1 119 0
+ 517 01d8 0023     		movs	r3, #0	@ tmp471,
+ 518 01da 1493     		str	r3, [sp, #80]	@ tmp471, priority
+ 120:code/main.c   **** digit=0;
+ 519              		.loc 1 120 0
+ 520 01dc 0023     		movs	r3, #0	@ tmp472,
+ 521 01de 1093     		str	r3, [sp, #64]	@ tmp472, digit
+ 121:code/main.c   **** bit=0;
+ 522              		.loc 1 121 0
+ 523 01e0 0023     		movs	r3, #0	@ tmp473,
+ 524 01e2 1193     		str	r3, [sp, #68]	@ tmp473, bit
+ 122:code/main.c   **** press_trip=0;
+ 525              		.loc 1 122 0
+ 526 01e4 0023     		movs	r3, #0	@ tmp474,
+ 527 01e6 0E93     		str	r3, [sp, #56]	@ tmp474, press_trip
+ 123:code/main.c   **** press_mode=0;
+ 528              		.loc 1 123 0
+ 529 01e8 0023     		movs	r3, #0	@ tmp475,
+ 530 01ea 0F93     		str	r3, [sp, #60]	@ tmp475, press_mode
+ 124:code/main.c   **** press_two_button=0;
+ 531              		.loc 1 124 0
+ 532 01ec 0023     		movs	r3, #0	@ tmp476,
+ 533 01ee 0D93     		str	r3, [sp, #52]	@ tmp476, press_two_button
+ 125:code/main.c   **** button_trip=0;
+ 534              		.loc 1 125 0
+ 535 01f0 0023     		movs	r3, #0	@ tmp477,
+ 536 01f2 0893     		str	r3, [sp, #32]	@ tmp477, button_trip
+ 126:code/main.c   **** button_mode=0;
+ 537              		.loc 1 126 0
+ 538 01f4 0023     		movs	r3, #0	@ tmp478,
+ 539 01f6 0793     		str	r3, [sp, #28]	@ tmp478, button_mode
+ 127:code/main.c   **** switch_count_of_fork=0;
+ 540              		.loc 1 127 0
+ 541 01f8 0023     		movs	r3, #0	@ tmp479,
+ 542 01fa 0693     		str	r3, [sp, #24]	@ tmp479, switch_count_of_fork
+ 128:code/main.c   **** switch_count_of_total_time=0;
+ 543              		.loc 1 128 0
+ 544 01fc 0023     		movs	r3, #0	@ tmp480,
+ 545 01fe 0593     		str	r3, [sp, #20]	@ tmp480, switch_count_of_total_time
+ 129:code/main.c   **** switch_count_of_time_per_cycle_of_crank=0;
+ 546              		.loc 1 129 0
+ 547 0200 0023     		movs	r3, #0	@ tmp481,
+ 548 0202 0493     		str	r3, [sp, #16]	@ tmp481, switch_count_of_time_per_cycle_of_crank
+ 130:code/main.c   **** switch_count_of_time_per_cycle_of_fork=0;
+ 549              		.loc 1 130 0
+ 550 0204 0023     		movs	r3, #0	@ tmp482,
+ 551 0206 0393     		str	r3, [sp, #12]	@ tmp482, switch_count_of_time_per_cycle_of_fork
+ 131:code/main.c   **** circumference=2136;
+ARM GAS  /tmp/cciGZpl2.s 			page 13
+
+
+ 552              		.loc 1 131 0
+ 553 0208 DA4B     		ldr	r3, .L118	@ tmp483,
+ 554 020a 1393     		str	r3, [sp, #76]	@ tmp483, circumference
+ 132:code/main.c   **** max_speed=0;
+ 555              		.loc 1 132 0
+ 556 020c 0023     		movs	r3, #0	@ tmp484,
+ 557 020e 1293     		str	r3, [sp, #72]	@ tmp484, max_speed
+ 133:code/main.c   **** current_speed=0;
+ 558              		.loc 1 133 0
+ 559 0210 0023     		movs	r3, #0	@ tmp485,
+ 560 0212 0293     		str	r3, [sp, #8]	@ tmp485, current_speed
+ 134:code/main.c   **** bit_0_digit=6;
+ 561              		.loc 1 134 0
+ 562 0214 0623     		movs	r3, #6	@ tmp486,
+ 563 0216 0C93     		str	r3, [sp, #48]	@ tmp486, bit_0_digit
+ 135:code/main.c   **** bit_1_digit=3;
+ 564              		.loc 1 135 0
+ 565 0218 0323     		movs	r3, #3	@ tmp487,
+ 566 021a 0B93     		str	r3, [sp, #44]	@ tmp487, bit_1_digit
+ 136:code/main.c   **** bit_2_digit=1;
+ 567              		.loc 1 136 0
+ 568 021c 0123     		movs	r3, #1	@ tmp488,
+ 569 021e 0A93     		str	r3, [sp, #40]	@ tmp488, bit_2_digit
+ 137:code/main.c   **** bit_3_digit=2;
+ 570              		.loc 1 137 0
+ 571 0220 0223     		movs	r3, #2	@ tmp489,
+ 572 0222 0993     		str	r3, [sp, #36]	@ tmp489, bit_3_digit
+ 138:code/main.c   **** speed_of_current=0;
+ 573              		.loc 1 138 0
+ 574 0224 0023     		movs	r3, #0	@ tmp490,
+ 575 0226 0193     		str	r3, [sp, #4]	@ tmp490, speed_of_current
+ 576              	.L113:
+ 139:code/main.c   **** while(1){
+ 140:code/main.c   ****     button_trip = read_switches(0);
+ 577              		.loc 1 140 0
+ 578 0228 0020     		movs	r0, #0	@,
+ 579 022a FFF7FEFF 		bl	read_switches	@
+ 580 022e 0300     		movs	r3, r0	@ D.4824,
+ 581 0230 0893     		str	r3, [sp, #32]	@ D.4824, button_trip
+ 141:code/main.c   ****     button_mode = read_switches(1);
+ 582              		.loc 1 141 0
+ 583 0232 0120     		movs	r0, #1	@,
+ 584 0234 FFF7FEFF 		bl	read_switches	@
+ 585 0238 0300     		movs	r3, r0	@ D.4824,
+ 586 023a 0793     		str	r3, [sp, #28]	@ D.4824, button_mode
+ 142:code/main.c   ****        switch_count_of_time_per_cycle_of_fork=read_switches(5);
+ 587              		.loc 1 142 0
+ 588 023c 0520     		movs	r0, #5	@,
+ 589 023e FFF7FEFF 		bl	read_switches	@
+ 590 0242 0300     		movs	r3, r0	@ D.4824,
+ 591 0244 0393     		str	r3, [sp, #12]	@ D.4824, switch_count_of_time_per_cycle_of_fork
+ 143:code/main.c   ****        current_speed=current_speed_function(switch_count_of_time_per_cycle_of_fork, circumference);
+ 592              		.loc 1 143 0
+ 593 0246 139A     		ldr	r2, [sp, #76]	@ tmp491, circumference
+ 594 0248 039B     		ldr	r3, [sp, #12]	@ tmp492, switch_count_of_time_per_cycle_of_fork
+ 595 024a 1100     		movs	r1, r2	@, tmp491
+ 596 024c 1800     		movs	r0, r3	@, tmp492
+ARM GAS  /tmp/cciGZpl2.s 			page 14
+
+
+ 597 024e FFF7FEFF 		bl	current_speed_function	@
+ 598 0252 0300     		movs	r3, r0	@ tmp493,
+ 599 0254 0293     		str	r3, [sp, #8]	@ tmp493, current_speed
+ 144:code/main.c   ****        speed_of_current=current_speed-2147483648-536870912;
+ 600              		.loc 1 144 0
+ 601 0256 029B     		ldr	r3, [sp, #8]	@ D.4825, current_speed
+ 602 0258 C022     		movs	r2, #192	@ tmp1025,
+ 603 025a D205     		lsls	r2, r2, #23	@ tmp1025, tmp1025,
+ 604 025c 9446     		mov	ip, r2	@ tmp1025, tmp1025
+ 605 025e 6344     		add	r3, r3, ip	@ D.4825, tmp1025
+ 606 0260 0193     		str	r3, [sp, #4]	@ D.4825, speed_of_current
+ 145:code/main.c   ****        if((speed_of_current) > (max_speed)){
+ 607              		.loc 1 145 0
+ 608 0262 019A     		ldr	r2, [sp, #4]	@ tmp494, speed_of_current
+ 609 0264 129B     		ldr	r3, [sp, #72]	@ tmp495, max_speed
+ 610 0266 9A42     		cmp	r2, r3	@ tmp494, tmp495
+ 611 0268 01DD     		ble	.L37	@,
+ 146:code/main.c   ****        max_speed=speed_of_current;
+ 612              		.loc 1 146 0
+ 613 026a 019B     		ldr	r3, [sp, #4]	@ tmp496, speed_of_current
+ 614 026c 1293     		str	r3, [sp, #72]	@ tmp496, max_speed
+ 615              	.L37:
+ 147:code/main.c   ****        }
+ 148:code/main.c   **** if (((button_mode>320)&&(button_trip>320))){
+ 616              		.loc 1 148 0
+ 617 026e 079A     		ldr	r2, [sp, #28]	@ tmp497, button_mode
+ 618 0270 A023     		movs	r3, #160	@ tmp1024,
+ 619 0272 5B00     		lsls	r3, r3, #1	@ tmp498, tmp1024,
+ 620 0274 9A42     		cmp	r2, r3	@ tmp497, tmp498
+ 621 0276 06DD     		ble	.L38	@,
+ 622              		.loc 1 148 0 is_stmt 0 discriminator 1
+ 623 0278 089A     		ldr	r2, [sp, #32]	@ tmp499, button_trip
+ 624 027a A023     		movs	r3, #160	@ tmp1023,
+ 625 027c 5B00     		lsls	r3, r3, #1	@ tmp500, tmp1023,
+ 626 027e 9A42     		cmp	r2, r3	@ tmp499, tmp500
+ 627 0280 01DD     		ble	.L38	@,
+ 149:code/main.c   **** press_two_button=1;
+ 628              		.loc 1 149 0 is_stmt 1
+ 629 0282 0123     		movs	r3, #1	@ tmp501,
+ 630 0284 0D93     		str	r3, [sp, #52]	@ tmp501, press_two_button
+ 631              	.L38:
+ 150:code/main.c   **** }
+ 151:code/main.c   **** if ((button_mode==0)&&(button_trip==0)&&(press_two_button==1)){
+ 632              		.loc 1 151 0
+ 633 0286 079B     		ldr	r3, [sp, #28]	@ tmp502, button_mode
+ 634 0288 002B     		cmp	r3, #0	@ tmp502,
+ 635 028a 18D1     		bne	.L39	@,
+ 636              		.loc 1 151 0 is_stmt 0 discriminator 1
+ 637 028c 089B     		ldr	r3, [sp, #32]	@ tmp503, button_trip
+ 638 028e 002B     		cmp	r3, #0	@ tmp503,
+ 639 0290 15D1     		bne	.L39	@,
+ 640              		.loc 1 151 0 discriminator 2
+ 641 0292 0D9B     		ldr	r3, [sp, #52]	@ tmp504, press_two_button
+ 642 0294 012B     		cmp	r3, #1	@ tmp504,
+ 643 0296 12D1     		bne	.L39	@,
+ 152:code/main.c   **** priority = 1;
+ 644              		.loc 1 152 0 is_stmt 1
+ARM GAS  /tmp/cciGZpl2.s 			page 15
+
+
+ 645 0298 0123     		movs	r3, #1	@ tmp505,
+ 646 029a 1493     		str	r3, [sp, #80]	@ tmp505, priority
+ 153:code/main.c   **** bit = 3;
+ 647              		.loc 1 153 0
+ 648 029c 0323     		movs	r3, #3	@ tmp506,
+ 649 029e 1193     		str	r3, [sp, #68]	@ tmp506, bit
+ 154:code/main.c   **** press_two_button=0;
+ 650              		.loc 1 154 0
+ 651 02a0 0023     		movs	r3, #0	@ tmp507,
+ 652 02a2 0D93     		str	r3, [sp, #52]	@ tmp507, press_two_button
+ 155:code/main.c   **** press_mode=0;
+ 653              		.loc 1 155 0
+ 654 02a4 0023     		movs	r3, #0	@ tmp508,
+ 655 02a6 0F93     		str	r3, [sp, #60]	@ tmp508, press_mode
+ 156:code/main.c   **** press_trip=0;
+ 656              		.loc 1 156 0
+ 657 02a8 0023     		movs	r3, #0	@ tmp509,
+ 658 02aa 0E93     		str	r3, [sp, #56]	@ tmp509, press_trip
+ 157:code/main.c   **** write_out(0); 
+ 659              		.loc 1 157 0
+ 660 02ac 0020     		movs	r0, #0	@,
+ 661 02ae FFF7FEFF 		bl	write_out	@
+ 158:code/main.c   **** delay_1s();             //display "size" for 1s and high 3 digits are 000
+ 662              		.loc 1 158 0
+ 663 02b2 FFF7FEFF 		bl	delay_1s	@
+ 159:code/main.c   **** write_out(536870912+2136);             //display "2136" high 3 digits are 001
+ 664              		.loc 1 159 0
+ 665 02b6 B04B     		ldr	r3, .L118+4	@ tmp510,
+ 666 02b8 1800     		movs	r0, r3	@, tmp510
+ 667 02ba FFF7FEFF 		bl	write_out	@
+ 668              	.L39:
+ 160:code/main.c   **** }
+ 161:code/main.c   **** if(priority){
+ 669              		.loc 1 161 0
+ 670 02be 149B     		ldr	r3, [sp, #80]	@ tmp511, priority
+ 671 02c0 002B     		cmp	r3, #0	@ tmp511,
+ 672 02c2 01D1     		bne	.LCB502	@
+ 673 02c4 00F0C3FC 		bl	.L40	@far jump	@
+ 674              	.LCB502:
+ 162:code/main.c   ****         if((button_trip>=320)&&(button_mode==0)){
+ 675              		.loc 1 162 0
+ 676 02c8 089A     		ldr	r2, [sp, #32]	@ tmp512, button_trip
+ 677 02ca 4023     		movs	r3, #64	@ tmp1022,
+ 678 02cc FF33     		adds	r3, r3, #255	@ tmp513,
+ 679 02ce 9A42     		cmp	r2, r3	@ tmp512, tmp513
+ 680 02d0 04DD     		ble	.L41	@,
+ 681              		.loc 1 162 0 is_stmt 0 discriminator 1
+ 682 02d2 079B     		ldr	r3, [sp, #28]	@ tmp514, button_mode
+ 683 02d4 002B     		cmp	r3, #0	@ tmp514,
+ 684 02d6 01D1     		bne	.L41	@,
+ 163:code/main.c   **** 	press_trip=1;
+ 685              		.loc 1 163 0 is_stmt 1
+ 686 02d8 0123     		movs	r3, #1	@ tmp515,
+ 687 02da 0E93     		str	r3, [sp, #56]	@ tmp515, press_trip
+ 688              	.L41:
+ 164:code/main.c   **** 	}
+ 165:code/main.c   **** 	if((button_trip==0)&&(press_trip==1)&&(button_mode==0)){
+ARM GAS  /tmp/cciGZpl2.s 			page 16
+
+
+ 689              		.loc 1 165 0
+ 690 02dc 089B     		ldr	r3, [sp, #32]	@ tmp516, button_trip
+ 691 02de 002B     		cmp	r3, #0	@ tmp516,
+ 692 02e0 10D1     		bne	.L42	@,
+ 693              		.loc 1 165 0 is_stmt 0 discriminator 1
+ 694 02e2 0E9B     		ldr	r3, [sp, #56]	@ tmp517, press_trip
+ 695 02e4 012B     		cmp	r3, #1	@ tmp517,
+ 696 02e6 0DD1     		bne	.L42	@,
+ 697              		.loc 1 165 0 discriminator 2
+ 698 02e8 079B     		ldr	r3, [sp, #28]	@ tmp518, button_mode
+ 699 02ea 002B     		cmp	r3, #0	@ tmp518,
+ 700 02ec 0AD1     		bne	.L42	@,
+ 166:code/main.c   **** 	         if(digit<9){
+ 701              		.loc 1 166 0 is_stmt 1
+ 702 02ee 109B     		ldr	r3, [sp, #64]	@ tmp519, digit
+ 703 02f0 082B     		cmp	r3, #8	@ tmp519,
+ 704 02f2 03DC     		bgt	.L43	@,
+ 167:code/main.c   **** 	          digit = digit+1;
+ 705              		.loc 1 167 0
+ 706 02f4 109B     		ldr	r3, [sp, #64]	@ tmp521, digit
+ 707 02f6 0133     		adds	r3, r3, #1	@ tmp520,
+ 708 02f8 1093     		str	r3, [sp, #64]	@ tmp520, digit
+ 709 02fa 01E0     		b	.L44	@
+ 710              	.L43:
+ 168:code/main.c   **** 	         }
+ 169:code/main.c   **** 	         else{
+ 170:code/main.c   **** 	          digit = 0;
+ 711              		.loc 1 170 0
+ 712 02fc 0023     		movs	r3, #0	@ tmp522,
+ 713 02fe 1093     		str	r3, [sp, #64]	@ tmp522, digit
+ 714              	.L44:
+ 171:code/main.c   **** 	         }
+ 172:code/main.c   **** 		 press_trip=0;
+ 715              		.loc 1 172 0
+ 716 0300 0023     		movs	r3, #0	@ tmp523,
+ 717 0302 0E93     		str	r3, [sp, #56]	@ tmp523, press_trip
+ 718              	.L42:
+ 173:code/main.c   **** 		 }		 
+ 174:code/main.c   ****         if((button_mode>=320)&&(button_trip==0)){
+ 719              		.loc 1 174 0
+ 720 0304 079A     		ldr	r2, [sp, #28]	@ tmp524, button_mode
+ 721 0306 4023     		movs	r3, #64	@ tmp1021,
+ 722 0308 FF33     		adds	r3, r3, #255	@ tmp525,
+ 723 030a 9A42     		cmp	r2, r3	@ tmp524, tmp525
+ 724 030c 04DD     		ble	.L45	@,
+ 725              		.loc 1 174 0 is_stmt 0 discriminator 1
+ 726 030e 089B     		ldr	r3, [sp, #32]	@ tmp526, button_trip
+ 727 0310 002B     		cmp	r3, #0	@ tmp526,
+ 728 0312 01D1     		bne	.L45	@,
+ 175:code/main.c   **** 	press_mode=1;
+ 729              		.loc 1 175 0 is_stmt 1
+ 730 0314 0123     		movs	r3, #1	@ tmp527,
+ 731 0316 0F93     		str	r3, [sp, #60]	@ tmp527, press_mode
+ 732              	.L45:
+ 176:code/main.c   **** 	}
+ 177:code/main.c   **** 	if((button_mode==0)&&(press_mode==1)&&(button_trip==0)){
+ 733              		.loc 1 177 0
+ARM GAS  /tmp/cciGZpl2.s 			page 17
+
+
+ 734 0318 079B     		ldr	r3, [sp, #28]	@ tmp528, button_mode
+ 735 031a 002B     		cmp	r3, #0	@ tmp528,
+ 736 031c 3ED1     		bne	.L46	@,
+ 737              		.loc 1 177 0 is_stmt 0 discriminator 1
+ 738 031e 0F9B     		ldr	r3, [sp, #60]	@ tmp529, press_mode
+ 739 0320 012B     		cmp	r3, #1	@ tmp529,
+ 740 0322 3BD1     		bne	.L46	@,
+ 741              		.loc 1 177 0 discriminator 2
+ 742 0324 089B     		ldr	r3, [sp, #32]	@ tmp530, button_trip
+ 743 0326 002B     		cmp	r3, #0	@ tmp530,
+ 744 0328 38D1     		bne	.L46	@,
+ 178:code/main.c   **** 	         if(bit>0){
+ 745              		.loc 1 178 0 is_stmt 1
+ 746 032a 119B     		ldr	r3, [sp, #68]	@ tmp531, bit
+ 747 032c 002B     		cmp	r3, #0	@ tmp531,
+ 748 032e 07DD     		ble	.L47	@,
+ 179:code/main.c   **** 		 bit = bit-1;
+ 749              		.loc 1 179 0
+ 750 0330 119B     		ldr	r3, [sp, #68]	@ tmp533, bit
+ 751 0332 013B     		subs	r3, r3, #1	@ tmp532,
+ 752 0334 1193     		str	r3, [sp, #68]	@ tmp532, bit
+ 180:code/main.c   **** 		 digit=0;
+ 753              		.loc 1 180 0
+ 754 0336 0023     		movs	r3, #0	@ tmp534,
+ 755 0338 1093     		str	r3, [sp, #64]	@ tmp534, digit
+ 181:code/main.c   **** 		 press_mode=0;
+ 756              		.loc 1 181 0
+ 757 033a 0023     		movs	r3, #0	@ tmp535,
+ 758 033c 0F93     		str	r3, [sp, #60]	@ tmp535, press_mode
+ 759 033e 2DE0     		b	.L46	@
+ 760              	.L47:
+ 182:code/main.c   **** 		 }
+ 183:code/main.c   **** 		 else{
+ 184:code/main.c   **** 		 circumference=bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit;
+ 761              		.loc 1 184 0
+ 762 0340 099B     		ldr	r3, [sp, #36]	@ tmp536, bit_3_digit
+ 763 0342 FA22     		movs	r2, #250	@ tmp1019,
+ 764 0344 9200     		lsls	r2, r2, #2	@ tmp537, tmp1019,
+ 765 0346 5A43     		muls	r2, r3	@ D.4826, tmp536
+ 766 0348 0A9B     		ldr	r3, [sp, #40]	@ tmp538, bit_2_digit
+ 767 034a 6421     		movs	r1, #100	@ tmp539,
+ 768 034c 4B43     		muls	r3, r1	@ D.4826, tmp539
+ 769 034e D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 770 0350 0B9A     		ldr	r2, [sp, #44]	@ tmp540, bit_1_digit
+ 771 0352 1300     		movs	r3, r2	@ tmp541, tmp540
+ 772 0354 9B00     		lsls	r3, r3, #2	@ tmp541, tmp541,
+ 773 0356 9B18     		adds	r3, r3, r2	@ tmp541, tmp541, tmp540
+ 774 0358 5B00     		lsls	r3, r3, #1	@ tmp542, tmp541,
+ 775 035a CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 776 035c 0C9B     		ldr	r3, [sp, #48]	@ tmp544, bit_0_digit
+ 777 035e D318     		adds	r3, r2, r3	@ tmp543, D.4826, tmp544
+ 778 0360 1393     		str	r3, [sp, #76]	@ tmp543, circumference
+ 185:code/main.c   **** 		 priority = 0 ;
+ 779              		.loc 1 185 0
+ 780 0362 0023     		movs	r3, #0	@ tmp545,
+ 781 0364 1493     		str	r3, [sp, #80]	@ tmp545, priority
+ 186:code/main.c   **** 		 state = 0;
+ARM GAS  /tmp/cciGZpl2.s 			page 18
+
+
+ 782              		.loc 1 186 0
+ 783 0366 0023     		movs	r3, #0	@ tmp546,
+ 784 0368 1593     		str	r3, [sp, #84]	@ tmp546, state
+ 187:code/main.c   **** 		 press_mode=0;
+ 785              		.loc 1 187 0
+ 786 036a 0023     		movs	r3, #0	@ tmp547,
+ 787 036c 0F93     		str	r3, [sp, #60]	@ tmp547, press_mode
+ 188:code/main.c   **** 		 write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 788              		.loc 1 188 0
+ 789 036e 099B     		ldr	r3, [sp, #36]	@ tmp548, bit_3_digit
+ 790 0370 FA22     		movs	r2, #250	@ tmp1020,
+ 791 0372 9200     		lsls	r2, r2, #2	@ tmp549, tmp1020,
+ 792 0374 5A43     		muls	r2, r3	@ D.4826, tmp548
+ 793 0376 0A9B     		ldr	r3, [sp, #40]	@ tmp550, bit_2_digit
+ 794 0378 6421     		movs	r1, #100	@ tmp551,
+ 795 037a 4B43     		muls	r3, r1	@ D.4826, tmp551
+ 796 037c D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 797 037e 0B9A     		ldr	r2, [sp, #44]	@ tmp552, bit_1_digit
+ 798 0380 1300     		movs	r3, r2	@ tmp553, tmp552
+ 799 0382 9B00     		lsls	r3, r3, #2	@ tmp553, tmp553,
+ 800 0384 9B18     		adds	r3, r3, r2	@ tmp553, tmp553, tmp552
+ 801 0386 5B00     		lsls	r3, r3, #1	@ tmp554, tmp553,
+ 802 0388 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 803 038a 0C9B     		ldr	r3, [sp, #48]	@ tmp555, bit_0_digit
+ 804 038c D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp555
+ 805 038e 8022     		movs	r2, #128	@ tmp1027,
+ 806 0390 9205     		lsls	r2, r2, #22	@ tmp1027, tmp1027,
+ 807 0392 9446     		mov	ip, r2	@ tmp1027, tmp1027
+ 808 0394 6344     		add	r3, r3, ip	@ D.4826, tmp1027
+ 809 0396 1800     		movs	r0, r3	@, D.4824
+ 810 0398 FFF7FEFF 		bl	write_out	@
+ 811              	.L46:
+ 189:code/main.c   **** 		 }
+ 190:code/main.c   **** 		 }
+ 191:code/main.c   ****      
+ 192:code/main.c   **** 	switch(bit){
+ 812              		.loc 1 192 0
+ 813 039c 119B     		ldr	r3, [sp, #68]	@ bit, bit
+ 814 039e 012B     		cmp	r3, #1	@ bit,
+ 815 03a0 00D1     		bne	.LCB626	@
+ 816 03a2 22E1     		b	.L49	@long jump	@
+ 817              	.LCB626:
+ 818 03a4 03DC     		bgt	.L50	@,
+ 819 03a6 002B     		cmp	r3, #0	@ bit,
+ 820 03a8 09D0     		beq	.L51	@,
+ 821 03aa 00F0E9FC 		bl	.L102	@ far jump	@
+ 822              	.L50:
+ 823 03ae 022B     		cmp	r3, #2	@ bit,
+ 824 03b0 00D1     		bne	.LCB636	@
+ 825 03b2 29E2     		b	.L52	@long jump	@
+ 826              	.LCB636:
+ 827 03b4 032B     		cmp	r3, #3	@ bit,
+ 828 03b6 00D1     		bne	.LCB638	@
+ 829 03b8 39E3     		b	.L53	@long jump	@
+ 830              	.LCB638:
+ 831 03ba 00F0E1FC 		bl	.L102	@ far jump	@
+ 832              	.L51:
+ARM GAS  /tmp/cciGZpl2.s 			page 19
+
+
+ 193:code/main.c   **** 	case 0:
+ 194:code/main.c   **** 		switch(digit){
+ 833              		.loc 1 194 0
+ 834 03be 109B     		ldr	r3, [sp, #64]	@ tmp557, digit
+ 835 03c0 092B     		cmp	r3, #9	@ tmp557,
+ 836 03c2 01D9     		bls	.LCB645	@
+ 837 03c4 00F0D2FC 		bl	.L114	@far jump	@
+ 838              	.LCB645:
+ 839 03c8 109B     		ldr	r3, [sp, #64]	@ tmp559, digit
+ 840 03ca 9A00     		lsls	r2, r3, #2	@ tmp558, tmp559,
+ 841 03cc 6B4B     		ldr	r3, .L118+8	@ tmp561,
+ 842 03ce D318     		adds	r3, r2, r3	@ tmp560, tmp558, tmp561
+ 843 03d0 1B68     		ldr	r3, [r3]	@ tmp562,
+ 844 03d2 9F46     		mov	pc, r3	@ tmp562
+ 845              		.section	.rodata
+ 846              		.align	2
+ 847              	.L56:
+ 848 0000 D4030000 		.word	.L55
+ 849 0004 08040000 		.word	.L57
+ 850 0008 3C040000 		.word	.L58
+ 851 000c 70040000 		.word	.L59
+ 852 0010 A4040000 		.word	.L60
+ 853 0014 D8040000 		.word	.L61
+ 854 0018 0C050000 		.word	.L62
+ 855 001c 40050000 		.word	.L63
+ 856 0020 80050000 		.word	.L64
+ 857 0024 B4050000 		.word	.L65
+ 858              		.text
+ 859              	.L55:
+ 195:code/main.c   **** 		case 0: 
+ 196:code/main.c   **** 			bit_0_digit=0;
+ 860              		.loc 1 196 0
+ 861 03d4 0023     		movs	r3, #0	@ tmp563,
+ 862 03d6 0C93     		str	r3, [sp, #48]	@ tmp563, bit_0_digit
+ 197:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 863              		.loc 1 197 0
+ 864 03d8 099B     		ldr	r3, [sp, #36]	@ tmp564, bit_3_digit
+ 865 03da FA22     		movs	r2, #250	@ tmp1018,
+ 866 03dc 9200     		lsls	r2, r2, #2	@ tmp565, tmp1018,
+ 867 03de 5A43     		muls	r2, r3	@ D.4826, tmp564
+ 868 03e0 0A9B     		ldr	r3, [sp, #40]	@ tmp566, bit_2_digit
+ 869 03e2 6421     		movs	r1, #100	@ tmp567,
+ 870 03e4 4B43     		muls	r3, r1	@ D.4826, tmp567
+ 871 03e6 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 872 03e8 0B9A     		ldr	r2, [sp, #44]	@ tmp568, bit_1_digit
+ 873 03ea 1300     		movs	r3, r2	@ tmp569, tmp568
+ 874 03ec 9B00     		lsls	r3, r3, #2	@ tmp569, tmp569,
+ 875 03ee 9B18     		adds	r3, r3, r2	@ tmp569, tmp569, tmp568
+ 876 03f0 5B00     		lsls	r3, r3, #1	@ tmp570, tmp569,
+ 877 03f2 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 878 03f4 0C9B     		ldr	r3, [sp, #48]	@ tmp571, bit_0_digit
+ 879 03f6 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp571
+ 880 03f8 8022     		movs	r2, #128	@ tmp1029,
+ 881 03fa 9205     		lsls	r2, r2, #22	@ tmp1029, tmp1029,
+ 882 03fc 9446     		mov	ip, r2	@ tmp1029, tmp1029
+ 883 03fe 6344     		add	r3, r3, ip	@ D.4826, tmp1029
+ 884 0400 1800     		movs	r0, r3	@, D.4824
+ARM GAS  /tmp/cciGZpl2.s 			page 20
+
+
+ 885 0402 FFF7FEFF 		bl	write_out	@
+ 198:code/main.c   **** 			break;
+ 886              		.loc 1 198 0
+ 887 0406 EFE0     		b	.L54	@
+ 888              	.L57:
+ 199:code/main.c   **** 		case 1:
+ 200:code/main.c   **** 			bit_0_digit=1;
+ 889              		.loc 1 200 0
+ 890 0408 0123     		movs	r3, #1	@ tmp572,
+ 891 040a 0C93     		str	r3, [sp, #48]	@ tmp572, bit_0_digit
+ 201:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 892              		.loc 1 201 0
+ 893 040c 099B     		ldr	r3, [sp, #36]	@ tmp573, bit_3_digit
+ 894 040e FA22     		movs	r2, #250	@ tmp1017,
+ 895 0410 9200     		lsls	r2, r2, #2	@ tmp574, tmp1017,
+ 896 0412 5A43     		muls	r2, r3	@ D.4826, tmp573
+ 897 0414 0A9B     		ldr	r3, [sp, #40]	@ tmp575, bit_2_digit
+ 898 0416 6421     		movs	r1, #100	@ tmp576,
+ 899 0418 4B43     		muls	r3, r1	@ D.4826, tmp576
+ 900 041a D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 901 041c 0B9A     		ldr	r2, [sp, #44]	@ tmp577, bit_1_digit
+ 902 041e 1300     		movs	r3, r2	@ tmp578, tmp577
+ 903 0420 9B00     		lsls	r3, r3, #2	@ tmp578, tmp578,
+ 904 0422 9B18     		adds	r3, r3, r2	@ tmp578, tmp578, tmp577
+ 905 0424 5B00     		lsls	r3, r3, #1	@ tmp579, tmp578,
+ 906 0426 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 907 0428 0C9B     		ldr	r3, [sp, #48]	@ tmp580, bit_0_digit
+ 908 042a D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp580
+ 909 042c 8022     		movs	r2, #128	@ tmp1031,
+ 910 042e 9205     		lsls	r2, r2, #22	@ tmp1031, tmp1031,
+ 911 0430 9446     		mov	ip, r2	@ tmp1031, tmp1031
+ 912 0432 6344     		add	r3, r3, ip	@ D.4826, tmp1031
+ 913 0434 1800     		movs	r0, r3	@, D.4824
+ 914 0436 FFF7FEFF 		bl	write_out	@
+ 202:code/main.c   **** 			break;
+ 915              		.loc 1 202 0
+ 916 043a D5E0     		b	.L54	@
+ 917              	.L58:
+ 203:code/main.c   **** 		case 2:
+ 204:code/main.c   **** 			bit_0_digit=2;
+ 918              		.loc 1 204 0
+ 919 043c 0223     		movs	r3, #2	@ tmp581,
+ 920 043e 0C93     		str	r3, [sp, #48]	@ tmp581, bit_0_digit
+ 205:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 921              		.loc 1 205 0
+ 922 0440 099B     		ldr	r3, [sp, #36]	@ tmp582, bit_3_digit
+ 923 0442 FA22     		movs	r2, #250	@ tmp1016,
+ 924 0444 9200     		lsls	r2, r2, #2	@ tmp583, tmp1016,
+ 925 0446 5A43     		muls	r2, r3	@ D.4826, tmp582
+ 926 0448 0A9B     		ldr	r3, [sp, #40]	@ tmp584, bit_2_digit
+ 927 044a 6421     		movs	r1, #100	@ tmp585,
+ 928 044c 4B43     		muls	r3, r1	@ D.4826, tmp585
+ 929 044e D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 930 0450 0B9A     		ldr	r2, [sp, #44]	@ tmp586, bit_1_digit
+ 931 0452 1300     		movs	r3, r2	@ tmp587, tmp586
+ 932 0454 9B00     		lsls	r3, r3, #2	@ tmp587, tmp587,
+ 933 0456 9B18     		adds	r3, r3, r2	@ tmp587, tmp587, tmp586
+ARM GAS  /tmp/cciGZpl2.s 			page 21
+
+
+ 934 0458 5B00     		lsls	r3, r3, #1	@ tmp588, tmp587,
+ 935 045a CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 936 045c 0C9B     		ldr	r3, [sp, #48]	@ tmp589, bit_0_digit
+ 937 045e D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp589
+ 938 0460 8022     		movs	r2, #128	@ tmp1033,
+ 939 0462 9205     		lsls	r2, r2, #22	@ tmp1033, tmp1033,
+ 940 0464 9446     		mov	ip, r2	@ tmp1033, tmp1033
+ 941 0466 6344     		add	r3, r3, ip	@ D.4826, tmp1033
+ 942 0468 1800     		movs	r0, r3	@, D.4824
+ 943 046a FFF7FEFF 		bl	write_out	@
+ 206:code/main.c   **** 			break;
+ 944              		.loc 1 206 0
+ 945 046e BBE0     		b	.L54	@
+ 946              	.L59:
+ 207:code/main.c   **** 		case 3:
+ 208:code/main.c   **** 			bit_0_digit=3;
+ 947              		.loc 1 208 0
+ 948 0470 0323     		movs	r3, #3	@ tmp590,
+ 949 0472 0C93     		str	r3, [sp, #48]	@ tmp590, bit_0_digit
+ 209:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 950              		.loc 1 209 0
+ 951 0474 099B     		ldr	r3, [sp, #36]	@ tmp591, bit_3_digit
+ 952 0476 FA22     		movs	r2, #250	@ tmp1015,
+ 953 0478 9200     		lsls	r2, r2, #2	@ tmp592, tmp1015,
+ 954 047a 5A43     		muls	r2, r3	@ D.4826, tmp591
+ 955 047c 0A9B     		ldr	r3, [sp, #40]	@ tmp593, bit_2_digit
+ 956 047e 6421     		movs	r1, #100	@ tmp594,
+ 957 0480 4B43     		muls	r3, r1	@ D.4826, tmp594
+ 958 0482 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 959 0484 0B9A     		ldr	r2, [sp, #44]	@ tmp595, bit_1_digit
+ 960 0486 1300     		movs	r3, r2	@ tmp596, tmp595
+ 961 0488 9B00     		lsls	r3, r3, #2	@ tmp596, tmp596,
+ 962 048a 9B18     		adds	r3, r3, r2	@ tmp596, tmp596, tmp595
+ 963 048c 5B00     		lsls	r3, r3, #1	@ tmp597, tmp596,
+ 964 048e CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 965 0490 0C9B     		ldr	r3, [sp, #48]	@ tmp598, bit_0_digit
+ 966 0492 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp598
+ 967 0494 8022     		movs	r2, #128	@ tmp1035,
+ 968 0496 9205     		lsls	r2, r2, #22	@ tmp1035, tmp1035,
+ 969 0498 9446     		mov	ip, r2	@ tmp1035, tmp1035
+ 970 049a 6344     		add	r3, r3, ip	@ D.4826, tmp1035
+ 971 049c 1800     		movs	r0, r3	@, D.4824
+ 972 049e FFF7FEFF 		bl	write_out	@
+ 210:code/main.c   **** 			break;
+ 973              		.loc 1 210 0
+ 974 04a2 A1E0     		b	.L54	@
+ 975              	.L60:
+ 211:code/main.c   **** 		case 4:
+ 212:code/main.c   **** 			bit_0_digit=4;
+ 976              		.loc 1 212 0
+ 977 04a4 0423     		movs	r3, #4	@ tmp599,
+ 978 04a6 0C93     		str	r3, [sp, #48]	@ tmp599, bit_0_digit
+ 213:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 979              		.loc 1 213 0
+ 980 04a8 099B     		ldr	r3, [sp, #36]	@ tmp600, bit_3_digit
+ 981 04aa FA22     		movs	r2, #250	@ tmp1014,
+ 982 04ac 9200     		lsls	r2, r2, #2	@ tmp601, tmp1014,
+ARM GAS  /tmp/cciGZpl2.s 			page 22
+
+
+ 983 04ae 5A43     		muls	r2, r3	@ D.4826, tmp600
+ 984 04b0 0A9B     		ldr	r3, [sp, #40]	@ tmp602, bit_2_digit
+ 985 04b2 6421     		movs	r1, #100	@ tmp603,
+ 986 04b4 4B43     		muls	r3, r1	@ D.4826, tmp603
+ 987 04b6 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 988 04b8 0B9A     		ldr	r2, [sp, #44]	@ tmp604, bit_1_digit
+ 989 04ba 1300     		movs	r3, r2	@ tmp605, tmp604
+ 990 04bc 9B00     		lsls	r3, r3, #2	@ tmp605, tmp605,
+ 991 04be 9B18     		adds	r3, r3, r2	@ tmp605, tmp605, tmp604
+ 992 04c0 5B00     		lsls	r3, r3, #1	@ tmp606, tmp605,
+ 993 04c2 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 994 04c4 0C9B     		ldr	r3, [sp, #48]	@ tmp607, bit_0_digit
+ 995 04c6 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp607
+ 996 04c8 8022     		movs	r2, #128	@ tmp1037,
+ 997 04ca 9205     		lsls	r2, r2, #22	@ tmp1037, tmp1037,
+ 998 04cc 9446     		mov	ip, r2	@ tmp1037, tmp1037
+ 999 04ce 6344     		add	r3, r3, ip	@ D.4826, tmp1037
+ 1000 04d0 1800     		movs	r0, r3	@, D.4824
+ 1001 04d2 FFF7FEFF 		bl	write_out	@
+ 214:code/main.c   **** 			break;
+ 1002              		.loc 1 214 0
+ 1003 04d6 87E0     		b	.L54	@
+ 1004              	.L61:
+ 215:code/main.c   **** 		case 5:
+ 216:code/main.c   **** 			bit_0_digit=5;
+ 1005              		.loc 1 216 0
+ 1006 04d8 0523     		movs	r3, #5	@ tmp608,
+ 1007 04da 0C93     		str	r3, [sp, #48]	@ tmp608, bit_0_digit
+ 217:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1008              		.loc 1 217 0
+ 1009 04dc 099B     		ldr	r3, [sp, #36]	@ tmp609, bit_3_digit
+ 1010 04de FA22     		movs	r2, #250	@ tmp1013,
+ 1011 04e0 9200     		lsls	r2, r2, #2	@ tmp610, tmp1013,
+ 1012 04e2 5A43     		muls	r2, r3	@ D.4826, tmp609
+ 1013 04e4 0A9B     		ldr	r3, [sp, #40]	@ tmp611, bit_2_digit
+ 1014 04e6 6421     		movs	r1, #100	@ tmp612,
+ 1015 04e8 4B43     		muls	r3, r1	@ D.4826, tmp612
+ 1016 04ea D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1017 04ec 0B9A     		ldr	r2, [sp, #44]	@ tmp613, bit_1_digit
+ 1018 04ee 1300     		movs	r3, r2	@ tmp614, tmp613
+ 1019 04f0 9B00     		lsls	r3, r3, #2	@ tmp614, tmp614,
+ 1020 04f2 9B18     		adds	r3, r3, r2	@ tmp614, tmp614, tmp613
+ 1021 04f4 5B00     		lsls	r3, r3, #1	@ tmp615, tmp614,
+ 1022 04f6 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1023 04f8 0C9B     		ldr	r3, [sp, #48]	@ tmp616, bit_0_digit
+ 1024 04fa D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp616
+ 1025 04fc 8022     		movs	r2, #128	@ tmp1039,
+ 1026 04fe 9205     		lsls	r2, r2, #22	@ tmp1039, tmp1039,
+ 1027 0500 9446     		mov	ip, r2	@ tmp1039, tmp1039
+ 1028 0502 6344     		add	r3, r3, ip	@ D.4826, tmp1039
+ 1029 0504 1800     		movs	r0, r3	@, D.4824
+ 1030 0506 FFF7FEFF 		bl	write_out	@
+ 218:code/main.c   **** 			break;
+ 1031              		.loc 1 218 0
+ 1032 050a 6DE0     		b	.L54	@
+ 1033              	.L62:
+ 219:code/main.c   **** 		case 6:
+ARM GAS  /tmp/cciGZpl2.s 			page 23
+
+
+ 220:code/main.c   **** 			bit_0_digit=6;
+ 1034              		.loc 1 220 0
+ 1035 050c 0623     		movs	r3, #6	@ tmp617,
+ 1036 050e 0C93     		str	r3, [sp, #48]	@ tmp617, bit_0_digit
+ 221:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1037              		.loc 1 221 0
+ 1038 0510 099B     		ldr	r3, [sp, #36]	@ tmp618, bit_3_digit
+ 1039 0512 FA22     		movs	r2, #250	@ tmp1012,
+ 1040 0514 9200     		lsls	r2, r2, #2	@ tmp619, tmp1012,
+ 1041 0516 5A43     		muls	r2, r3	@ D.4826, tmp618
+ 1042 0518 0A9B     		ldr	r3, [sp, #40]	@ tmp620, bit_2_digit
+ 1043 051a 6421     		movs	r1, #100	@ tmp621,
+ 1044 051c 4B43     		muls	r3, r1	@ D.4826, tmp621
+ 1045 051e D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1046 0520 0B9A     		ldr	r2, [sp, #44]	@ tmp622, bit_1_digit
+ 1047 0522 1300     		movs	r3, r2	@ tmp623, tmp622
+ 1048 0524 9B00     		lsls	r3, r3, #2	@ tmp623, tmp623,
+ 1049 0526 9B18     		adds	r3, r3, r2	@ tmp623, tmp623, tmp622
+ 1050 0528 5B00     		lsls	r3, r3, #1	@ tmp624, tmp623,
+ 1051 052a CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1052 052c 0C9B     		ldr	r3, [sp, #48]	@ tmp625, bit_0_digit
+ 1053 052e D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp625
+ 1054 0530 8022     		movs	r2, #128	@ tmp1041,
+ 1055 0532 9205     		lsls	r2, r2, #22	@ tmp1041, tmp1041,
+ 1056 0534 9446     		mov	ip, r2	@ tmp1041, tmp1041
+ 1057 0536 6344     		add	r3, r3, ip	@ D.4826, tmp1041
+ 1058 0538 1800     		movs	r0, r3	@, D.4824
+ 1059 053a FFF7FEFF 		bl	write_out	@
+ 222:code/main.c   **** 			break;
+ 1060              		.loc 1 222 0
+ 1061 053e 53E0     		b	.L54	@
+ 1062              	.L63:
+ 223:code/main.c   **** 		case 7:
+ 224:code/main.c   **** 			bit_0_digit=7;
+ 1063              		.loc 1 224 0
+ 1064 0540 0723     		movs	r3, #7	@ tmp626,
+ 1065 0542 0C93     		str	r3, [sp, #48]	@ tmp626, bit_0_digit
+ 225:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1066              		.loc 1 225 0
+ 1067 0544 099B     		ldr	r3, [sp, #36]	@ tmp627, bit_3_digit
+ 1068 0546 FA22     		movs	r2, #250	@ tmp1011,
+ 1069 0548 9200     		lsls	r2, r2, #2	@ tmp628, tmp1011,
+ 1070 054a 5A43     		muls	r2, r3	@ D.4826, tmp627
+ 1071 054c 0A9B     		ldr	r3, [sp, #40]	@ tmp629, bit_2_digit
+ 1072 054e 6421     		movs	r1, #100	@ tmp630,
+ 1073 0550 4B43     		muls	r3, r1	@ D.4826, tmp630
+ 1074 0552 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1075 0554 0B9A     		ldr	r2, [sp, #44]	@ tmp631, bit_1_digit
+ 1076 0556 1300     		movs	r3, r2	@ tmp632, tmp631
+ 1077 0558 9B00     		lsls	r3, r3, #2	@ tmp632, tmp632,
+ 1078 055a 9B18     		adds	r3, r3, r2	@ tmp632, tmp632, tmp631
+ 1079 055c 5B00     		lsls	r3, r3, #1	@ tmp633, tmp632,
+ 1080 055e CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1081 0560 0C9B     		ldr	r3, [sp, #48]	@ tmp634, bit_0_digit
+ 1082 0562 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp634
+ 1083 0564 8022     		movs	r2, #128	@ tmp1043,
+ 1084 0566 9205     		lsls	r2, r2, #22	@ tmp1043, tmp1043,
+ARM GAS  /tmp/cciGZpl2.s 			page 24
+
+
+ 1085 0568 9446     		mov	ip, r2	@ tmp1043, tmp1043
+ 1086 056a 6344     		add	r3, r3, ip	@ D.4826, tmp1043
+ 1087 056c 1800     		movs	r0, r3	@, D.4824
+ 1088 056e FFF7FEFF 		bl	write_out	@
+ 226:code/main.c   **** 			break;
+ 1089              		.loc 1 226 0
+ 1090 0572 39E0     		b	.L54	@
+ 1091              	.L119:
+ 1092              		.align	2
+ 1093              	.L118:
+ 1094 0574 58080000 		.word	2136
+ 1095 0578 58080020 		.word	536873048
+ 1096 057c 00000000 		.word	.L56
+ 1097              	.L64:
+ 227:code/main.c   **** 		case 8:
+ 228:code/main.c   **** 			bit_0_digit=8;
+ 1098              		.loc 1 228 0
+ 1099 0580 0823     		movs	r3, #8	@ tmp635,
+ 1100 0582 0C93     		str	r3, [sp, #48]	@ tmp635, bit_0_digit
+ 229:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1101              		.loc 1 229 0
+ 1102 0584 099B     		ldr	r3, [sp, #36]	@ tmp636, bit_3_digit
+ 1103 0586 FA22     		movs	r2, #250	@ tmp1010,
+ 1104 0588 9200     		lsls	r2, r2, #2	@ tmp637, tmp1010,
+ 1105 058a 5A43     		muls	r2, r3	@ D.4826, tmp636
+ 1106 058c 0A9B     		ldr	r3, [sp, #40]	@ tmp638, bit_2_digit
+ 1107 058e 6421     		movs	r1, #100	@ tmp639,
+ 1108 0590 4B43     		muls	r3, r1	@ D.4826, tmp639
+ 1109 0592 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1110 0594 0B9A     		ldr	r2, [sp, #44]	@ tmp640, bit_1_digit
+ 1111 0596 1300     		movs	r3, r2	@ tmp641, tmp640
+ 1112 0598 9B00     		lsls	r3, r3, #2	@ tmp641, tmp641,
+ 1113 059a 9B18     		adds	r3, r3, r2	@ tmp641, tmp641, tmp640
+ 1114 059c 5B00     		lsls	r3, r3, #1	@ tmp642, tmp641,
+ 1115 059e CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1116 05a0 0C9B     		ldr	r3, [sp, #48]	@ tmp643, bit_0_digit
+ 1117 05a2 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp643
+ 1118 05a4 8022     		movs	r2, #128	@ tmp1045,
+ 1119 05a6 9205     		lsls	r2, r2, #22	@ tmp1045, tmp1045,
+ 1120 05a8 9446     		mov	ip, r2	@ tmp1045, tmp1045
+ 1121 05aa 6344     		add	r3, r3, ip	@ D.4826, tmp1045
+ 1122 05ac 1800     		movs	r0, r3	@, D.4824
+ 1123 05ae FFF7FEFF 		bl	write_out	@
+ 230:code/main.c   **** 			break;
+ 1124              		.loc 1 230 0
+ 1125 05b2 19E0     		b	.L54	@
+ 1126              	.L65:
+ 231:code/main.c   **** 		case 9:
+ 232:code/main.c   **** 			bit_0_digit=9;
+ 1127              		.loc 1 232 0
+ 1128 05b4 0923     		movs	r3, #9	@ tmp644,
+ 1129 05b6 0C93     		str	r3, [sp, #48]	@ tmp644, bit_0_digit
+ 233:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1130              		.loc 1 233 0
+ 1131 05b8 099B     		ldr	r3, [sp, #36]	@ tmp645, bit_3_digit
+ 1132 05ba FA22     		movs	r2, #250	@ tmp1009,
+ 1133 05bc 9200     		lsls	r2, r2, #2	@ tmp646, tmp1009,
+ARM GAS  /tmp/cciGZpl2.s 			page 25
+
+
+ 1134 05be 5A43     		muls	r2, r3	@ D.4826, tmp645
+ 1135 05c0 0A9B     		ldr	r3, [sp, #40]	@ tmp647, bit_2_digit
+ 1136 05c2 6421     		movs	r1, #100	@ tmp648,
+ 1137 05c4 4B43     		muls	r3, r1	@ D.4826, tmp648
+ 1138 05c6 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1139 05c8 0B9A     		ldr	r2, [sp, #44]	@ tmp649, bit_1_digit
+ 1140 05ca 1300     		movs	r3, r2	@ tmp650, tmp649
+ 1141 05cc 9B00     		lsls	r3, r3, #2	@ tmp650, tmp650,
+ 1142 05ce 9B18     		adds	r3, r3, r2	@ tmp650, tmp650, tmp649
+ 1143 05d0 5B00     		lsls	r3, r3, #1	@ tmp651, tmp650,
+ 1144 05d2 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1145 05d4 0C9B     		ldr	r3, [sp, #48]	@ tmp652, bit_0_digit
+ 1146 05d6 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp652
+ 1147 05d8 8022     		movs	r2, #128	@ tmp1047,
+ 1148 05da 9205     		lsls	r2, r2, #22	@ tmp1047, tmp1047,
+ 1149 05dc 9446     		mov	ip, r2	@ tmp1047, tmp1047
+ 1150 05de 6344     		add	r3, r3, ip	@ D.4826, tmp1047
+ 1151 05e0 1800     		movs	r0, r3	@, D.4824
+ 1152 05e2 FFF7FEFF 		bl	write_out	@
+ 234:code/main.c   **** 			break;
+ 1153              		.loc 1 234 0
+ 1154 05e6 C046     		nop
+ 1155              	.L54:
+ 235:code/main.c   **** 		}
+ 236:code/main.c   **** 		break;
+ 1156              		.loc 1 236 0
+ 1157 05e8 C0E3     		b	.L114	@
+ 1158              	.L49:
+ 237:code/main.c   **** 	case 1:
+ 238:code/main.c   **** 		switch(digit){
+ 1159              		.loc 1 238 0
+ 1160 05ea 109B     		ldr	r3, [sp, #64]	@ tmp653, digit
+ 1161 05ec 092B     		cmp	r3, #9	@ tmp653,
+ 1162 05ee 00D9     		bls	.LCB951	@
+ 1163 05f0 BFE3     		b	.L115	@long jump	@
+ 1164              	.LCB951:
+ 1165 05f2 109B     		ldr	r3, [sp, #64]	@ tmp655, digit
+ 1166 05f4 9A00     		lsls	r2, r3, #2	@ tmp654, tmp655,
+ 1167 05f6 F14B     		ldr	r3, .L120	@ tmp657,
+ 1168 05f8 D318     		adds	r3, r2, r3	@ tmp656, tmp654, tmp657
+ 1169 05fa 1B68     		ldr	r3, [r3]	@ tmp658,
+ 1170 05fc 9F46     		mov	pc, r3	@ tmp658
+ 1171              		.section	.rodata
+ 1172              		.align	2
+ 1173              	.L68:
+ 1174 0028 FE050000 		.word	.L67
+ 1175 002c 32060000 		.word	.L69
+ 1176 0030 66060000 		.word	.L70
+ 1177 0034 9A060000 		.word	.L71
+ 1178 0038 CE060000 		.word	.L72
+ 1179 003c 02070000 		.word	.L73
+ 1180 0040 36070000 		.word	.L74
+ 1181 0044 6A070000 		.word	.L75
+ 1182 0048 9E070000 		.word	.L76
+ 1183 004c D2070000 		.word	.L77
+ 1184              		.text
+ 1185              	.L67:
+ARM GAS  /tmp/cciGZpl2.s 			page 26
+
+
+ 239:code/main.c   **** 		case 0: 
+ 240:code/main.c   **** 			bit_1_digit=0;
+ 1186              		.loc 1 240 0
+ 1187 05fe 0023     		movs	r3, #0	@ tmp659,
+ 1188 0600 0B93     		str	r3, [sp, #44]	@ tmp659, bit_1_digit
+ 241:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1189              		.loc 1 241 0
+ 1190 0602 099B     		ldr	r3, [sp, #36]	@ tmp660, bit_3_digit
+ 1191 0604 FA22     		movs	r2, #250	@ tmp1008,
+ 1192 0606 9200     		lsls	r2, r2, #2	@ tmp661, tmp1008,
+ 1193 0608 5A43     		muls	r2, r3	@ D.4826, tmp660
+ 1194 060a 0A9B     		ldr	r3, [sp, #40]	@ tmp662, bit_2_digit
+ 1195 060c 6421     		movs	r1, #100	@ tmp663,
+ 1196 060e 4B43     		muls	r3, r1	@ D.4826, tmp663
+ 1197 0610 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1198 0612 0B9A     		ldr	r2, [sp, #44]	@ tmp664, bit_1_digit
+ 1199 0614 1300     		movs	r3, r2	@ tmp665, tmp664
+ 1200 0616 9B00     		lsls	r3, r3, #2	@ tmp665, tmp665,
+ 1201 0618 9B18     		adds	r3, r3, r2	@ tmp665, tmp665, tmp664
+ 1202 061a 5B00     		lsls	r3, r3, #1	@ tmp666, tmp665,
+ 1203 061c CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1204 061e 0C9B     		ldr	r3, [sp, #48]	@ tmp667, bit_0_digit
+ 1205 0620 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp667
+ 1206 0622 8022     		movs	r2, #128	@ tmp1049,
+ 1207 0624 9205     		lsls	r2, r2, #22	@ tmp1049, tmp1049,
+ 1208 0626 9446     		mov	ip, r2	@ tmp1049, tmp1049
+ 1209 0628 6344     		add	r3, r3, ip	@ D.4826, tmp1049
+ 1210 062a 1800     		movs	r0, r3	@, D.4824
+ 1211 062c FFF7FEFF 		bl	write_out	@
+ 242:code/main.c   **** 			break;
+ 1212              		.loc 1 242 0
+ 1213 0630 E9E0     		b	.L66	@
+ 1214              	.L69:
+ 243:code/main.c   **** 		case 1:
+ 244:code/main.c   **** 			bit_1_digit=1;
+ 1215              		.loc 1 244 0
+ 1216 0632 0123     		movs	r3, #1	@ tmp668,
+ 1217 0634 0B93     		str	r3, [sp, #44]	@ tmp668, bit_1_digit
+ 245:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1218              		.loc 1 245 0
+ 1219 0636 099B     		ldr	r3, [sp, #36]	@ tmp669, bit_3_digit
+ 1220 0638 FA22     		movs	r2, #250	@ tmp1007,
+ 1221 063a 9200     		lsls	r2, r2, #2	@ tmp670, tmp1007,
+ 1222 063c 5A43     		muls	r2, r3	@ D.4826, tmp669
+ 1223 063e 0A9B     		ldr	r3, [sp, #40]	@ tmp671, bit_2_digit
+ 1224 0640 6421     		movs	r1, #100	@ tmp672,
+ 1225 0642 4B43     		muls	r3, r1	@ D.4826, tmp672
+ 1226 0644 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1227 0646 0B9A     		ldr	r2, [sp, #44]	@ tmp673, bit_1_digit
+ 1228 0648 1300     		movs	r3, r2	@ tmp674, tmp673
+ 1229 064a 9B00     		lsls	r3, r3, #2	@ tmp674, tmp674,
+ 1230 064c 9B18     		adds	r3, r3, r2	@ tmp674, tmp674, tmp673
+ 1231 064e 5B00     		lsls	r3, r3, #1	@ tmp675, tmp674,
+ 1232 0650 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1233 0652 0C9B     		ldr	r3, [sp, #48]	@ tmp676, bit_0_digit
+ 1234 0654 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp676
+ 1235 0656 8022     		movs	r2, #128	@ tmp1051,
+ARM GAS  /tmp/cciGZpl2.s 			page 27
+
+
+ 1236 0658 9205     		lsls	r2, r2, #22	@ tmp1051, tmp1051,
+ 1237 065a 9446     		mov	ip, r2	@ tmp1051, tmp1051
+ 1238 065c 6344     		add	r3, r3, ip	@ D.4826, tmp1051
+ 1239 065e 1800     		movs	r0, r3	@, D.4824
+ 1240 0660 FFF7FEFF 		bl	write_out	@
+ 246:code/main.c   **** 			break;
+ 1241              		.loc 1 246 0
+ 1242 0664 CFE0     		b	.L66	@
+ 1243              	.L70:
+ 247:code/main.c   **** 		case 2:
+ 248:code/main.c   **** 			bit_1_digit=2;
+ 1244              		.loc 1 248 0
+ 1245 0666 0223     		movs	r3, #2	@ tmp677,
+ 1246 0668 0B93     		str	r3, [sp, #44]	@ tmp677, bit_1_digit
+ 249:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1247              		.loc 1 249 0
+ 1248 066a 099B     		ldr	r3, [sp, #36]	@ tmp678, bit_3_digit
+ 1249 066c FA22     		movs	r2, #250	@ tmp1006,
+ 1250 066e 9200     		lsls	r2, r2, #2	@ tmp679, tmp1006,
+ 1251 0670 5A43     		muls	r2, r3	@ D.4826, tmp678
+ 1252 0672 0A9B     		ldr	r3, [sp, #40]	@ tmp680, bit_2_digit
+ 1253 0674 6421     		movs	r1, #100	@ tmp681,
+ 1254 0676 4B43     		muls	r3, r1	@ D.4826, tmp681
+ 1255 0678 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1256 067a 0B9A     		ldr	r2, [sp, #44]	@ tmp682, bit_1_digit
+ 1257 067c 1300     		movs	r3, r2	@ tmp683, tmp682
+ 1258 067e 9B00     		lsls	r3, r3, #2	@ tmp683, tmp683,
+ 1259 0680 9B18     		adds	r3, r3, r2	@ tmp683, tmp683, tmp682
+ 1260 0682 5B00     		lsls	r3, r3, #1	@ tmp684, tmp683,
+ 1261 0684 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1262 0686 0C9B     		ldr	r3, [sp, #48]	@ tmp685, bit_0_digit
+ 1263 0688 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp685
+ 1264 068a 8022     		movs	r2, #128	@ tmp1053,
+ 1265 068c 9205     		lsls	r2, r2, #22	@ tmp1053, tmp1053,
+ 1266 068e 9446     		mov	ip, r2	@ tmp1053, tmp1053
+ 1267 0690 6344     		add	r3, r3, ip	@ D.4826, tmp1053
+ 1268 0692 1800     		movs	r0, r3	@, D.4824
+ 1269 0694 FFF7FEFF 		bl	write_out	@
+ 250:code/main.c   **** 			break;
+ 1270              		.loc 1 250 0
+ 1271 0698 B5E0     		b	.L66	@
+ 1272              	.L71:
+ 251:code/main.c   **** 		case 3:
+ 252:code/main.c   **** 			bit_1_digit=3;
+ 1273              		.loc 1 252 0
+ 1274 069a 0323     		movs	r3, #3	@ tmp686,
+ 1275 069c 0B93     		str	r3, [sp, #44]	@ tmp686, bit_1_digit
+ 253:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1276              		.loc 1 253 0
+ 1277 069e 099B     		ldr	r3, [sp, #36]	@ tmp687, bit_3_digit
+ 1278 06a0 FA22     		movs	r2, #250	@ tmp1005,
+ 1279 06a2 9200     		lsls	r2, r2, #2	@ tmp688, tmp1005,
+ 1280 06a4 5A43     		muls	r2, r3	@ D.4826, tmp687
+ 1281 06a6 0A9B     		ldr	r3, [sp, #40]	@ tmp689, bit_2_digit
+ 1282 06a8 6421     		movs	r1, #100	@ tmp690,
+ 1283 06aa 4B43     		muls	r3, r1	@ D.4826, tmp690
+ 1284 06ac D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ARM GAS  /tmp/cciGZpl2.s 			page 28
+
+
+ 1285 06ae 0B9A     		ldr	r2, [sp, #44]	@ tmp691, bit_1_digit
+ 1286 06b0 1300     		movs	r3, r2	@ tmp692, tmp691
+ 1287 06b2 9B00     		lsls	r3, r3, #2	@ tmp692, tmp692,
+ 1288 06b4 9B18     		adds	r3, r3, r2	@ tmp692, tmp692, tmp691
+ 1289 06b6 5B00     		lsls	r3, r3, #1	@ tmp693, tmp692,
+ 1290 06b8 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1291 06ba 0C9B     		ldr	r3, [sp, #48]	@ tmp694, bit_0_digit
+ 1292 06bc D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp694
+ 1293 06be 8022     		movs	r2, #128	@ tmp1055,
+ 1294 06c0 9205     		lsls	r2, r2, #22	@ tmp1055, tmp1055,
+ 1295 06c2 9446     		mov	ip, r2	@ tmp1055, tmp1055
+ 1296 06c4 6344     		add	r3, r3, ip	@ D.4826, tmp1055
+ 1297 06c6 1800     		movs	r0, r3	@, D.4824
+ 1298 06c8 FFF7FEFF 		bl	write_out	@
+ 254:code/main.c   **** 			break;
+ 1299              		.loc 1 254 0
+ 1300 06cc 9BE0     		b	.L66	@
+ 1301              	.L72:
+ 255:code/main.c   **** 		case 4:
+ 256:code/main.c   **** 			bit_1_digit=4;
+ 1302              		.loc 1 256 0
+ 1303 06ce 0423     		movs	r3, #4	@ tmp695,
+ 1304 06d0 0B93     		str	r3, [sp, #44]	@ tmp695, bit_1_digit
+ 257:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1305              		.loc 1 257 0
+ 1306 06d2 099B     		ldr	r3, [sp, #36]	@ tmp696, bit_3_digit
+ 1307 06d4 FA22     		movs	r2, #250	@ tmp1004,
+ 1308 06d6 9200     		lsls	r2, r2, #2	@ tmp697, tmp1004,
+ 1309 06d8 5A43     		muls	r2, r3	@ D.4826, tmp696
+ 1310 06da 0A9B     		ldr	r3, [sp, #40]	@ tmp698, bit_2_digit
+ 1311 06dc 6421     		movs	r1, #100	@ tmp699,
+ 1312 06de 4B43     		muls	r3, r1	@ D.4826, tmp699
+ 1313 06e0 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1314 06e2 0B9A     		ldr	r2, [sp, #44]	@ tmp700, bit_1_digit
+ 1315 06e4 1300     		movs	r3, r2	@ tmp701, tmp700
+ 1316 06e6 9B00     		lsls	r3, r3, #2	@ tmp701, tmp701,
+ 1317 06e8 9B18     		adds	r3, r3, r2	@ tmp701, tmp701, tmp700
+ 1318 06ea 5B00     		lsls	r3, r3, #1	@ tmp702, tmp701,
+ 1319 06ec CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1320 06ee 0C9B     		ldr	r3, [sp, #48]	@ tmp703, bit_0_digit
+ 1321 06f0 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp703
+ 1322 06f2 8022     		movs	r2, #128	@ tmp1057,
+ 1323 06f4 9205     		lsls	r2, r2, #22	@ tmp1057, tmp1057,
+ 1324 06f6 9446     		mov	ip, r2	@ tmp1057, tmp1057
+ 1325 06f8 6344     		add	r3, r3, ip	@ D.4826, tmp1057
+ 1326 06fa 1800     		movs	r0, r3	@, D.4824
+ 1327 06fc FFF7FEFF 		bl	write_out	@
+ 258:code/main.c   **** 			break;
+ 1328              		.loc 1 258 0
+ 1329 0700 81E0     		b	.L66	@
+ 1330              	.L73:
+ 259:code/main.c   **** 		case 5:
+ 260:code/main.c   **** 			bit_1_digit=5;
+ 1331              		.loc 1 260 0
+ 1332 0702 0523     		movs	r3, #5	@ tmp704,
+ 1333 0704 0B93     		str	r3, [sp, #44]	@ tmp704, bit_1_digit
+ 261:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ARM GAS  /tmp/cciGZpl2.s 			page 29
+
+
+ 1334              		.loc 1 261 0
+ 1335 0706 099B     		ldr	r3, [sp, #36]	@ tmp705, bit_3_digit
+ 1336 0708 FA22     		movs	r2, #250	@ tmp1003,
+ 1337 070a 9200     		lsls	r2, r2, #2	@ tmp706, tmp1003,
+ 1338 070c 5A43     		muls	r2, r3	@ D.4826, tmp705
+ 1339 070e 0A9B     		ldr	r3, [sp, #40]	@ tmp707, bit_2_digit
+ 1340 0710 6421     		movs	r1, #100	@ tmp708,
+ 1341 0712 4B43     		muls	r3, r1	@ D.4826, tmp708
+ 1342 0714 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1343 0716 0B9A     		ldr	r2, [sp, #44]	@ tmp709, bit_1_digit
+ 1344 0718 1300     		movs	r3, r2	@ tmp710, tmp709
+ 1345 071a 9B00     		lsls	r3, r3, #2	@ tmp710, tmp710,
+ 1346 071c 9B18     		adds	r3, r3, r2	@ tmp710, tmp710, tmp709
+ 1347 071e 5B00     		lsls	r3, r3, #1	@ tmp711, tmp710,
+ 1348 0720 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1349 0722 0C9B     		ldr	r3, [sp, #48]	@ tmp712, bit_0_digit
+ 1350 0724 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp712
+ 1351 0726 8022     		movs	r2, #128	@ tmp1059,
+ 1352 0728 9205     		lsls	r2, r2, #22	@ tmp1059, tmp1059,
+ 1353 072a 9446     		mov	ip, r2	@ tmp1059, tmp1059
+ 1354 072c 6344     		add	r3, r3, ip	@ D.4826, tmp1059
+ 1355 072e 1800     		movs	r0, r3	@, D.4824
+ 1356 0730 FFF7FEFF 		bl	write_out	@
+ 262:code/main.c   **** 			break;
+ 1357              		.loc 1 262 0
+ 1358 0734 67E0     		b	.L66	@
+ 1359              	.L74:
+ 263:code/main.c   **** 		case 6:
+ 264:code/main.c   **** 			bit_1_digit=6;
+ 1360              		.loc 1 264 0
+ 1361 0736 0623     		movs	r3, #6	@ tmp713,
+ 1362 0738 0B93     		str	r3, [sp, #44]	@ tmp713, bit_1_digit
+ 265:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1363              		.loc 1 265 0
+ 1364 073a 099B     		ldr	r3, [sp, #36]	@ tmp714, bit_3_digit
+ 1365 073c FA22     		movs	r2, #250	@ tmp1002,
+ 1366 073e 9200     		lsls	r2, r2, #2	@ tmp715, tmp1002,
+ 1367 0740 5A43     		muls	r2, r3	@ D.4826, tmp714
+ 1368 0742 0A9B     		ldr	r3, [sp, #40]	@ tmp716, bit_2_digit
+ 1369 0744 6421     		movs	r1, #100	@ tmp717,
+ 1370 0746 4B43     		muls	r3, r1	@ D.4826, tmp717
+ 1371 0748 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1372 074a 0B9A     		ldr	r2, [sp, #44]	@ tmp718, bit_1_digit
+ 1373 074c 1300     		movs	r3, r2	@ tmp719, tmp718
+ 1374 074e 9B00     		lsls	r3, r3, #2	@ tmp719, tmp719,
+ 1375 0750 9B18     		adds	r3, r3, r2	@ tmp719, tmp719, tmp718
+ 1376 0752 5B00     		lsls	r3, r3, #1	@ tmp720, tmp719,
+ 1377 0754 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1378 0756 0C9B     		ldr	r3, [sp, #48]	@ tmp721, bit_0_digit
+ 1379 0758 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp721
+ 1380 075a 8022     		movs	r2, #128	@ tmp1061,
+ 1381 075c 9205     		lsls	r2, r2, #22	@ tmp1061, tmp1061,
+ 1382 075e 9446     		mov	ip, r2	@ tmp1061, tmp1061
+ 1383 0760 6344     		add	r3, r3, ip	@ D.4826, tmp1061
+ 1384 0762 1800     		movs	r0, r3	@, D.4824
+ 1385 0764 FFF7FEFF 		bl	write_out	@
+ 266:code/main.c   **** 			break;
+ARM GAS  /tmp/cciGZpl2.s 			page 30
+
+
+ 1386              		.loc 1 266 0
+ 1387 0768 4DE0     		b	.L66	@
+ 1388              	.L75:
+ 267:code/main.c   **** 		case 7:
+ 268:code/main.c   **** 			bit_1_digit=7;
+ 1389              		.loc 1 268 0
+ 1390 076a 0723     		movs	r3, #7	@ tmp722,
+ 1391 076c 0B93     		str	r3, [sp, #44]	@ tmp722, bit_1_digit
+ 269:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1392              		.loc 1 269 0
+ 1393 076e 099B     		ldr	r3, [sp, #36]	@ tmp723, bit_3_digit
+ 1394 0770 FA22     		movs	r2, #250	@ tmp1001,
+ 1395 0772 9200     		lsls	r2, r2, #2	@ tmp724, tmp1001,
+ 1396 0774 5A43     		muls	r2, r3	@ D.4826, tmp723
+ 1397 0776 0A9B     		ldr	r3, [sp, #40]	@ tmp725, bit_2_digit
+ 1398 0778 6421     		movs	r1, #100	@ tmp726,
+ 1399 077a 4B43     		muls	r3, r1	@ D.4826, tmp726
+ 1400 077c D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1401 077e 0B9A     		ldr	r2, [sp, #44]	@ tmp727, bit_1_digit
+ 1402 0780 1300     		movs	r3, r2	@ tmp728, tmp727
+ 1403 0782 9B00     		lsls	r3, r3, #2	@ tmp728, tmp728,
+ 1404 0784 9B18     		adds	r3, r3, r2	@ tmp728, tmp728, tmp727
+ 1405 0786 5B00     		lsls	r3, r3, #1	@ tmp729, tmp728,
+ 1406 0788 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1407 078a 0C9B     		ldr	r3, [sp, #48]	@ tmp730, bit_0_digit
+ 1408 078c D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp730
+ 1409 078e 8022     		movs	r2, #128	@ tmp1063,
+ 1410 0790 9205     		lsls	r2, r2, #22	@ tmp1063, tmp1063,
+ 1411 0792 9446     		mov	ip, r2	@ tmp1063, tmp1063
+ 1412 0794 6344     		add	r3, r3, ip	@ D.4826, tmp1063
+ 1413 0796 1800     		movs	r0, r3	@, D.4824
+ 1414 0798 FFF7FEFF 		bl	write_out	@
+ 270:code/main.c   **** 			break;
+ 1415              		.loc 1 270 0
+ 1416 079c 33E0     		b	.L66	@
+ 1417              	.L76:
+ 271:code/main.c   **** 		case 8:
+ 272:code/main.c   **** 			bit_1_digit=8;
+ 1418              		.loc 1 272 0
+ 1419 079e 0823     		movs	r3, #8	@ tmp731,
+ 1420 07a0 0B93     		str	r3, [sp, #44]	@ tmp731, bit_1_digit
+ 273:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1421              		.loc 1 273 0
+ 1422 07a2 099B     		ldr	r3, [sp, #36]	@ tmp732, bit_3_digit
+ 1423 07a4 FA22     		movs	r2, #250	@ tmp1000,
+ 1424 07a6 9200     		lsls	r2, r2, #2	@ tmp733, tmp1000,
+ 1425 07a8 5A43     		muls	r2, r3	@ D.4826, tmp732
+ 1426 07aa 0A9B     		ldr	r3, [sp, #40]	@ tmp734, bit_2_digit
+ 1427 07ac 6421     		movs	r1, #100	@ tmp735,
+ 1428 07ae 4B43     		muls	r3, r1	@ D.4826, tmp735
+ 1429 07b0 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1430 07b2 0B9A     		ldr	r2, [sp, #44]	@ tmp736, bit_1_digit
+ 1431 07b4 1300     		movs	r3, r2	@ tmp737, tmp736
+ 1432 07b6 9B00     		lsls	r3, r3, #2	@ tmp737, tmp737,
+ 1433 07b8 9B18     		adds	r3, r3, r2	@ tmp737, tmp737, tmp736
+ 1434 07ba 5B00     		lsls	r3, r3, #1	@ tmp738, tmp737,
+ 1435 07bc CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ARM GAS  /tmp/cciGZpl2.s 			page 31
+
+
+ 1436 07be 0C9B     		ldr	r3, [sp, #48]	@ tmp739, bit_0_digit
+ 1437 07c0 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp739
+ 1438 07c2 8022     		movs	r2, #128	@ tmp1065,
+ 1439 07c4 9205     		lsls	r2, r2, #22	@ tmp1065, tmp1065,
+ 1440 07c6 9446     		mov	ip, r2	@ tmp1065, tmp1065
+ 1441 07c8 6344     		add	r3, r3, ip	@ D.4826, tmp1065
+ 1442 07ca 1800     		movs	r0, r3	@, D.4824
+ 1443 07cc FFF7FEFF 		bl	write_out	@
+ 274:code/main.c   **** 			break;
+ 1444              		.loc 1 274 0
+ 1445 07d0 19E0     		b	.L66	@
+ 1446              	.L77:
+ 275:code/main.c   **** 		case 9:
+ 276:code/main.c   **** 			bit_1_digit=9;
+ 1447              		.loc 1 276 0
+ 1448 07d2 0923     		movs	r3, #9	@ tmp740,
+ 1449 07d4 0B93     		str	r3, [sp, #44]	@ tmp740, bit_1_digit
+ 277:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1450              		.loc 1 277 0
+ 1451 07d6 099B     		ldr	r3, [sp, #36]	@ tmp741, bit_3_digit
+ 1452 07d8 FA22     		movs	r2, #250	@ tmp999,
+ 1453 07da 9200     		lsls	r2, r2, #2	@ tmp742, tmp999,
+ 1454 07dc 5A43     		muls	r2, r3	@ D.4826, tmp741
+ 1455 07de 0A9B     		ldr	r3, [sp, #40]	@ tmp743, bit_2_digit
+ 1456 07e0 6421     		movs	r1, #100	@ tmp744,
+ 1457 07e2 4B43     		muls	r3, r1	@ D.4826, tmp744
+ 1458 07e4 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1459 07e6 0B9A     		ldr	r2, [sp, #44]	@ tmp745, bit_1_digit
+ 1460 07e8 1300     		movs	r3, r2	@ tmp746, tmp745
+ 1461 07ea 9B00     		lsls	r3, r3, #2	@ tmp746, tmp746,
+ 1462 07ec 9B18     		adds	r3, r3, r2	@ tmp746, tmp746, tmp745
+ 1463 07ee 5B00     		lsls	r3, r3, #1	@ tmp747, tmp746,
+ 1464 07f0 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1465 07f2 0C9B     		ldr	r3, [sp, #48]	@ tmp748, bit_0_digit
+ 1466 07f4 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp748
+ 1467 07f6 8022     		movs	r2, #128	@ tmp1067,
+ 1468 07f8 9205     		lsls	r2, r2, #22	@ tmp1067, tmp1067,
+ 1469 07fa 9446     		mov	ip, r2	@ tmp1067, tmp1067
+ 1470 07fc 6344     		add	r3, r3, ip	@ D.4826, tmp1067
+ 1471 07fe 1800     		movs	r0, r3	@, D.4824
+ 1472 0800 FFF7FEFF 		bl	write_out	@
+ 278:code/main.c   **** 			break;
+ 1473              		.loc 1 278 0
+ 1474 0804 C046     		nop
+ 1475              	.L66:
+ 279:code/main.c   **** 		}
+ 280:code/main.c   **** 		break;
+ 1476              		.loc 1 280 0 discriminator 2
+ 1477 0806 B4E2     		b	.L115	@
+ 1478              	.L52:
+ 281:code/main.c   **** 	case 2:
+ 282:code/main.c   **** 		switch(digit)
+ 1479              		.loc 1 282 0
+ 1480 0808 109B     		ldr	r3, [sp, #64]	@ tmp749, digit
+ 1481 080a 092B     		cmp	r3, #9	@ tmp749,
+ 1482 080c 00D9     		bls	.LCB1249	@
+ 1483 080e B3E2     		b	.L116	@long jump	@
+ARM GAS  /tmp/cciGZpl2.s 			page 32
+
+
+ 1484              	.LCB1249:
+ 1485 0810 109B     		ldr	r3, [sp, #64]	@ tmp751, digit
+ 1486 0812 9A00     		lsls	r2, r3, #2	@ tmp750, tmp751,
+ 1487 0814 6A4B     		ldr	r3, .L120+4	@ tmp753,
+ 1488 0816 D318     		adds	r3, r2, r3	@ tmp752, tmp750, tmp753
+ 1489 0818 1B68     		ldr	r3, [r3]	@ tmp754,
+ 1490 081a 9F46     		mov	pc, r3	@ tmp754
+ 1491              		.section	.rodata
+ 1492              		.align	2
+ 1493              	.L80:
+ 1494 0050 1C080000 		.word	.L79
+ 1495 0054 50080000 		.word	.L81
+ 1496 0058 84080000 		.word	.L82
+ 1497 005c B8080000 		.word	.L83
+ 1498 0060 EC080000 		.word	.L84
+ 1499 0064 20090000 		.word	.L85
+ 1500 0068 54090000 		.word	.L86
+ 1501 006c 88090000 		.word	.L87
+ 1502 0070 C4090000 		.word	.L88
+ 1503 0074 F8090000 		.word	.L89
+ 1504              		.text
+ 1505              	.L79:
+ 283:code/main.c   **** 		case 0: {
+ 284:code/main.c   **** 			bit_2_digit=0;
+ 1506              		.loc 1 284 0
+ 1507 081c 0023     		movs	r3, #0	@ tmp755,
+ 1508 081e 0A93     		str	r3, [sp, #40]	@ tmp755, bit_2_digit
+ 285:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1509              		.loc 1 285 0
+ 1510 0820 099B     		ldr	r3, [sp, #36]	@ tmp756, bit_3_digit
+ 1511 0822 FA22     		movs	r2, #250	@ tmp998,
+ 1512 0824 9200     		lsls	r2, r2, #2	@ tmp757, tmp998,
+ 1513 0826 5A43     		muls	r2, r3	@ D.4826, tmp756
+ 1514 0828 0A9B     		ldr	r3, [sp, #40]	@ tmp758, bit_2_digit
+ 1515 082a 6421     		movs	r1, #100	@ tmp759,
+ 1516 082c 4B43     		muls	r3, r1	@ D.4826, tmp759
+ 1517 082e D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1518 0830 0B9A     		ldr	r2, [sp, #44]	@ tmp760, bit_1_digit
+ 1519 0832 1300     		movs	r3, r2	@ tmp761, tmp760
+ 1520 0834 9B00     		lsls	r3, r3, #2	@ tmp761, tmp761,
+ 1521 0836 9B18     		adds	r3, r3, r2	@ tmp761, tmp761, tmp760
+ 1522 0838 5B00     		lsls	r3, r3, #1	@ tmp762, tmp761,
+ 1523 083a CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1524 083c 0C9B     		ldr	r3, [sp, #48]	@ tmp763, bit_0_digit
+ 1525 083e D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp763
+ 1526 0840 8022     		movs	r2, #128	@ tmp1069,
+ 1527 0842 9205     		lsls	r2, r2, #22	@ tmp1069, tmp1069,
+ 1528 0844 9446     		mov	ip, r2	@ tmp1069, tmp1069
+ 1529 0846 6344     		add	r3, r3, ip	@ D.4826, tmp1069
+ 1530 0848 1800     		movs	r0, r3	@, D.4824
+ 1531 084a FFF7FEFF 		bl	write_out	@
+ 286:code/main.c   **** 			break;
+ 1532              		.loc 1 286 0
+ 1533 084e EDE0     		b	.L78	@
+ 1534              	.L81:
+ 287:code/main.c   **** 		case 1:
+ 288:code/main.c   **** 			bit_2_digit=1;
+ARM GAS  /tmp/cciGZpl2.s 			page 33
+
+
+ 1535              		.loc 1 288 0
+ 1536 0850 0123     		movs	r3, #1	@ tmp764,
+ 1537 0852 0A93     		str	r3, [sp, #40]	@ tmp764, bit_2_digit
+ 289:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1538              		.loc 1 289 0
+ 1539 0854 099B     		ldr	r3, [sp, #36]	@ tmp765, bit_3_digit
+ 1540 0856 FA22     		movs	r2, #250	@ tmp997,
+ 1541 0858 9200     		lsls	r2, r2, #2	@ tmp766, tmp997,
+ 1542 085a 5A43     		muls	r2, r3	@ D.4826, tmp765
+ 1543 085c 0A9B     		ldr	r3, [sp, #40]	@ tmp767, bit_2_digit
+ 1544 085e 6421     		movs	r1, #100	@ tmp768,
+ 1545 0860 4B43     		muls	r3, r1	@ D.4826, tmp768
+ 1546 0862 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1547 0864 0B9A     		ldr	r2, [sp, #44]	@ tmp769, bit_1_digit
+ 1548 0866 1300     		movs	r3, r2	@ tmp770, tmp769
+ 1549 0868 9B00     		lsls	r3, r3, #2	@ tmp770, tmp770,
+ 1550 086a 9B18     		adds	r3, r3, r2	@ tmp770, tmp770, tmp769
+ 1551 086c 5B00     		lsls	r3, r3, #1	@ tmp771, tmp770,
+ 1552 086e CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1553 0870 0C9B     		ldr	r3, [sp, #48]	@ tmp772, bit_0_digit
+ 1554 0872 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp772
+ 1555 0874 8022     		movs	r2, #128	@ tmp1071,
+ 1556 0876 9205     		lsls	r2, r2, #22	@ tmp1071, tmp1071,
+ 1557 0878 9446     		mov	ip, r2	@ tmp1071, tmp1071
+ 1558 087a 6344     		add	r3, r3, ip	@ D.4826, tmp1071
+ 1559 087c 1800     		movs	r0, r3	@, D.4824
+ 1560 087e FFF7FEFF 		bl	write_out	@
+ 290:code/main.c   **** 			break;
+ 1561              		.loc 1 290 0
+ 1562 0882 D3E0     		b	.L78	@
+ 1563              	.L82:
+ 291:code/main.c   **** 		case 2:
+ 292:code/main.c   **** 			bit_2_digit=2;
+ 1564              		.loc 1 292 0
+ 1565 0884 0223     		movs	r3, #2	@ tmp773,
+ 1566 0886 0A93     		str	r3, [sp, #40]	@ tmp773, bit_2_digit
+ 293:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1567              		.loc 1 293 0
+ 1568 0888 099B     		ldr	r3, [sp, #36]	@ tmp774, bit_3_digit
+ 1569 088a FA22     		movs	r2, #250	@ tmp996,
+ 1570 088c 9200     		lsls	r2, r2, #2	@ tmp775, tmp996,
+ 1571 088e 5A43     		muls	r2, r3	@ D.4826, tmp774
+ 1572 0890 0A9B     		ldr	r3, [sp, #40]	@ tmp776, bit_2_digit
+ 1573 0892 6421     		movs	r1, #100	@ tmp777,
+ 1574 0894 4B43     		muls	r3, r1	@ D.4826, tmp777
+ 1575 0896 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1576 0898 0B9A     		ldr	r2, [sp, #44]	@ tmp778, bit_1_digit
+ 1577 089a 1300     		movs	r3, r2	@ tmp779, tmp778
+ 1578 089c 9B00     		lsls	r3, r3, #2	@ tmp779, tmp779,
+ 1579 089e 9B18     		adds	r3, r3, r2	@ tmp779, tmp779, tmp778
+ 1580 08a0 5B00     		lsls	r3, r3, #1	@ tmp780, tmp779,
+ 1581 08a2 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1582 08a4 0C9B     		ldr	r3, [sp, #48]	@ tmp781, bit_0_digit
+ 1583 08a6 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp781
+ 1584 08a8 8022     		movs	r2, #128	@ tmp1073,
+ 1585 08aa 9205     		lsls	r2, r2, #22	@ tmp1073, tmp1073,
+ 1586 08ac 9446     		mov	ip, r2	@ tmp1073, tmp1073
+ARM GAS  /tmp/cciGZpl2.s 			page 34
+
+
+ 1587 08ae 6344     		add	r3, r3, ip	@ D.4826, tmp1073
+ 1588 08b0 1800     		movs	r0, r3	@, D.4824
+ 1589 08b2 FFF7FEFF 		bl	write_out	@
+ 294:code/main.c   **** 			break;
+ 1590              		.loc 1 294 0
+ 1591 08b6 B9E0     		b	.L78	@
+ 1592              	.L83:
+ 295:code/main.c   **** 		case 3:
+ 296:code/main.c   **** 			bit_2_digit=3;
+ 1593              		.loc 1 296 0
+ 1594 08b8 0323     		movs	r3, #3	@ tmp782,
+ 1595 08ba 0A93     		str	r3, [sp, #40]	@ tmp782, bit_2_digit
+ 297:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1596              		.loc 1 297 0
+ 1597 08bc 099B     		ldr	r3, [sp, #36]	@ tmp783, bit_3_digit
+ 1598 08be FA22     		movs	r2, #250	@ tmp995,
+ 1599 08c0 9200     		lsls	r2, r2, #2	@ tmp784, tmp995,
+ 1600 08c2 5A43     		muls	r2, r3	@ D.4826, tmp783
+ 1601 08c4 0A9B     		ldr	r3, [sp, #40]	@ tmp785, bit_2_digit
+ 1602 08c6 6421     		movs	r1, #100	@ tmp786,
+ 1603 08c8 4B43     		muls	r3, r1	@ D.4826, tmp786
+ 1604 08ca D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1605 08cc 0B9A     		ldr	r2, [sp, #44]	@ tmp787, bit_1_digit
+ 1606 08ce 1300     		movs	r3, r2	@ tmp788, tmp787
+ 1607 08d0 9B00     		lsls	r3, r3, #2	@ tmp788, tmp788,
+ 1608 08d2 9B18     		adds	r3, r3, r2	@ tmp788, tmp788, tmp787
+ 1609 08d4 5B00     		lsls	r3, r3, #1	@ tmp789, tmp788,
+ 1610 08d6 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1611 08d8 0C9B     		ldr	r3, [sp, #48]	@ tmp790, bit_0_digit
+ 1612 08da D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp790
+ 1613 08dc 8022     		movs	r2, #128	@ tmp1075,
+ 1614 08de 9205     		lsls	r2, r2, #22	@ tmp1075, tmp1075,
+ 1615 08e0 9446     		mov	ip, r2	@ tmp1075, tmp1075
+ 1616 08e2 6344     		add	r3, r3, ip	@ D.4826, tmp1075
+ 1617 08e4 1800     		movs	r0, r3	@, D.4824
+ 1618 08e6 FFF7FEFF 		bl	write_out	@
+ 298:code/main.c   **** 			break;
+ 1619              		.loc 1 298 0
+ 1620 08ea 9FE0     		b	.L78	@
+ 1621              	.L84:
+ 299:code/main.c   **** 		case 4:
+ 300:code/main.c   **** 			bit_2_digit=4;
+ 1622              		.loc 1 300 0
+ 1623 08ec 0423     		movs	r3, #4	@ tmp791,
+ 1624 08ee 0A93     		str	r3, [sp, #40]	@ tmp791, bit_2_digit
+ 301:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1625              		.loc 1 301 0
+ 1626 08f0 099B     		ldr	r3, [sp, #36]	@ tmp792, bit_3_digit
+ 1627 08f2 FA22     		movs	r2, #250	@ tmp994,
+ 1628 08f4 9200     		lsls	r2, r2, #2	@ tmp793, tmp994,
+ 1629 08f6 5A43     		muls	r2, r3	@ D.4826, tmp792
+ 1630 08f8 0A9B     		ldr	r3, [sp, #40]	@ tmp794, bit_2_digit
+ 1631 08fa 6421     		movs	r1, #100	@ tmp795,
+ 1632 08fc 4B43     		muls	r3, r1	@ D.4826, tmp795
+ 1633 08fe D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1634 0900 0B9A     		ldr	r2, [sp, #44]	@ tmp796, bit_1_digit
+ 1635 0902 1300     		movs	r3, r2	@ tmp797, tmp796
+ARM GAS  /tmp/cciGZpl2.s 			page 35
+
+
+ 1636 0904 9B00     		lsls	r3, r3, #2	@ tmp797, tmp797,
+ 1637 0906 9B18     		adds	r3, r3, r2	@ tmp797, tmp797, tmp796
+ 1638 0908 5B00     		lsls	r3, r3, #1	@ tmp798, tmp797,
+ 1639 090a CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1640 090c 0C9B     		ldr	r3, [sp, #48]	@ tmp799, bit_0_digit
+ 1641 090e D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp799
+ 1642 0910 8022     		movs	r2, #128	@ tmp1077,
+ 1643 0912 9205     		lsls	r2, r2, #22	@ tmp1077, tmp1077,
+ 1644 0914 9446     		mov	ip, r2	@ tmp1077, tmp1077
+ 1645 0916 6344     		add	r3, r3, ip	@ D.4826, tmp1077
+ 1646 0918 1800     		movs	r0, r3	@, D.4824
+ 1647 091a FFF7FEFF 		bl	write_out	@
+ 302:code/main.c   **** 			break;
+ 1648              		.loc 1 302 0
+ 1649 091e 85E0     		b	.L78	@
+ 1650              	.L85:
+ 303:code/main.c   **** 		case 5:
+ 304:code/main.c   **** 			bit_2_digit=5;
+ 1651              		.loc 1 304 0
+ 1652 0920 0523     		movs	r3, #5	@ tmp800,
+ 1653 0922 0A93     		str	r3, [sp, #40]	@ tmp800, bit_2_digit
+ 305:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1654              		.loc 1 305 0
+ 1655 0924 099B     		ldr	r3, [sp, #36]	@ tmp801, bit_3_digit
+ 1656 0926 FA22     		movs	r2, #250	@ tmp993,
+ 1657 0928 9200     		lsls	r2, r2, #2	@ tmp802, tmp993,
+ 1658 092a 5A43     		muls	r2, r3	@ D.4826, tmp801
+ 1659 092c 0A9B     		ldr	r3, [sp, #40]	@ tmp803, bit_2_digit
+ 1660 092e 6421     		movs	r1, #100	@ tmp804,
+ 1661 0930 4B43     		muls	r3, r1	@ D.4826, tmp804
+ 1662 0932 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1663 0934 0B9A     		ldr	r2, [sp, #44]	@ tmp805, bit_1_digit
+ 1664 0936 1300     		movs	r3, r2	@ tmp806, tmp805
+ 1665 0938 9B00     		lsls	r3, r3, #2	@ tmp806, tmp806,
+ 1666 093a 9B18     		adds	r3, r3, r2	@ tmp806, tmp806, tmp805
+ 1667 093c 5B00     		lsls	r3, r3, #1	@ tmp807, tmp806,
+ 1668 093e CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1669 0940 0C9B     		ldr	r3, [sp, #48]	@ tmp808, bit_0_digit
+ 1670 0942 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp808
+ 1671 0944 8022     		movs	r2, #128	@ tmp1079,
+ 1672 0946 9205     		lsls	r2, r2, #22	@ tmp1079, tmp1079,
+ 1673 0948 9446     		mov	ip, r2	@ tmp1079, tmp1079
+ 1674 094a 6344     		add	r3, r3, ip	@ D.4826, tmp1079
+ 1675 094c 1800     		movs	r0, r3	@, D.4824
+ 1676 094e FFF7FEFF 		bl	write_out	@
+ 306:code/main.c   **** 			break;
+ 1677              		.loc 1 306 0
+ 1678 0952 6BE0     		b	.L78	@
+ 1679              	.L86:
+ 307:code/main.c   **** 		case 6:
+ 308:code/main.c   **** 			bit_2_digit=6;
+ 1680              		.loc 1 308 0
+ 1681 0954 0623     		movs	r3, #6	@ tmp809,
+ 1682 0956 0A93     		str	r3, [sp, #40]	@ tmp809, bit_2_digit
+ 309:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1683              		.loc 1 309 0
+ 1684 0958 099B     		ldr	r3, [sp, #36]	@ tmp810, bit_3_digit
+ARM GAS  /tmp/cciGZpl2.s 			page 36
+
+
+ 1685 095a FA22     		movs	r2, #250	@ tmp992,
+ 1686 095c 9200     		lsls	r2, r2, #2	@ tmp811, tmp992,
+ 1687 095e 5A43     		muls	r2, r3	@ D.4826, tmp810
+ 1688 0960 0A9B     		ldr	r3, [sp, #40]	@ tmp812, bit_2_digit
+ 1689 0962 6421     		movs	r1, #100	@ tmp813,
+ 1690 0964 4B43     		muls	r3, r1	@ D.4826, tmp813
+ 1691 0966 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1692 0968 0B9A     		ldr	r2, [sp, #44]	@ tmp814, bit_1_digit
+ 1693 096a 1300     		movs	r3, r2	@ tmp815, tmp814
+ 1694 096c 9B00     		lsls	r3, r3, #2	@ tmp815, tmp815,
+ 1695 096e 9B18     		adds	r3, r3, r2	@ tmp815, tmp815, tmp814
+ 1696 0970 5B00     		lsls	r3, r3, #1	@ tmp816, tmp815,
+ 1697 0972 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1698 0974 0C9B     		ldr	r3, [sp, #48]	@ tmp817, bit_0_digit
+ 1699 0976 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp817
+ 1700 0978 8022     		movs	r2, #128	@ tmp1081,
+ 1701 097a 9205     		lsls	r2, r2, #22	@ tmp1081, tmp1081,
+ 1702 097c 9446     		mov	ip, r2	@ tmp1081, tmp1081
+ 1703 097e 6344     		add	r3, r3, ip	@ D.4826, tmp1081
+ 1704 0980 1800     		movs	r0, r3	@, D.4824
+ 1705 0982 FFF7FEFF 		bl	write_out	@
+ 310:code/main.c   **** 			break;
+ 1706              		.loc 1 310 0
+ 1707 0986 51E0     		b	.L78	@
+ 1708              	.L87:
+ 311:code/main.c   **** 		case 7:
+ 312:code/main.c   **** 			bit_2_digit=7;
+ 1709              		.loc 1 312 0
+ 1710 0988 0723     		movs	r3, #7	@ tmp818,
+ 1711 098a 0A93     		str	r3, [sp, #40]	@ tmp818, bit_2_digit
+ 313:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1712              		.loc 1 313 0
+ 1713 098c 099B     		ldr	r3, [sp, #36]	@ tmp819, bit_3_digit
+ 1714 098e FA22     		movs	r2, #250	@ tmp991,
+ 1715 0990 9200     		lsls	r2, r2, #2	@ tmp820, tmp991,
+ 1716 0992 5A43     		muls	r2, r3	@ D.4826, tmp819
+ 1717 0994 0A9B     		ldr	r3, [sp, #40]	@ tmp821, bit_2_digit
+ 1718 0996 6421     		movs	r1, #100	@ tmp822,
+ 1719 0998 4B43     		muls	r3, r1	@ D.4826, tmp822
+ 1720 099a D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1721 099c 0B9A     		ldr	r2, [sp, #44]	@ tmp823, bit_1_digit
+ 1722 099e 1300     		movs	r3, r2	@ tmp824, tmp823
+ 1723 09a0 9B00     		lsls	r3, r3, #2	@ tmp824, tmp824,
+ 1724 09a2 9B18     		adds	r3, r3, r2	@ tmp824, tmp824, tmp823
+ 1725 09a4 5B00     		lsls	r3, r3, #1	@ tmp825, tmp824,
+ 1726 09a6 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1727 09a8 0C9B     		ldr	r3, [sp, #48]	@ tmp826, bit_0_digit
+ 1728 09aa D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp826
+ 1729 09ac 8022     		movs	r2, #128	@ tmp1083,
+ 1730 09ae 9205     		lsls	r2, r2, #22	@ tmp1083, tmp1083,
+ 1731 09b0 9446     		mov	ip, r2	@ tmp1083, tmp1083
+ 1732 09b2 6344     		add	r3, r3, ip	@ D.4826, tmp1083
+ 1733 09b4 1800     		movs	r0, r3	@, D.4824
+ 1734 09b6 FFF7FEFF 		bl	write_out	@
+ 314:code/main.c   **** 			break;
+ 1735              		.loc 1 314 0
+ 1736 09ba 37E0     		b	.L78	@
+ARM GAS  /tmp/cciGZpl2.s 			page 37
+
+
+ 1737              	.L121:
+ 1738              		.align	2
+ 1739              	.L120:
+ 1740 09bc 28000000 		.word	.L68
+ 1741 09c0 50000000 		.word	.L80
+ 1742              	.L88:
+ 315:code/main.c   **** 		case 8:
+ 316:code/main.c   **** 			bit_2_digit=8;
+ 1743              		.loc 1 316 0
+ 1744 09c4 0823     		movs	r3, #8	@ tmp827,
+ 1745 09c6 0A93     		str	r3, [sp, #40]	@ tmp827, bit_2_digit
+ 317:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1746              		.loc 1 317 0
+ 1747 09c8 099B     		ldr	r3, [sp, #36]	@ tmp828, bit_3_digit
+ 1748 09ca FA22     		movs	r2, #250	@ tmp990,
+ 1749 09cc 9200     		lsls	r2, r2, #2	@ tmp829, tmp990,
+ 1750 09ce 5A43     		muls	r2, r3	@ D.4826, tmp828
+ 1751 09d0 0A9B     		ldr	r3, [sp, #40]	@ tmp830, bit_2_digit
+ 1752 09d2 6421     		movs	r1, #100	@ tmp831,
+ 1753 09d4 4B43     		muls	r3, r1	@ D.4826, tmp831
+ 1754 09d6 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1755 09d8 0B9A     		ldr	r2, [sp, #44]	@ tmp832, bit_1_digit
+ 1756 09da 1300     		movs	r3, r2	@ tmp833, tmp832
+ 1757 09dc 9B00     		lsls	r3, r3, #2	@ tmp833, tmp833,
+ 1758 09de 9B18     		adds	r3, r3, r2	@ tmp833, tmp833, tmp832
+ 1759 09e0 5B00     		lsls	r3, r3, #1	@ tmp834, tmp833,
+ 1760 09e2 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1761 09e4 0C9B     		ldr	r3, [sp, #48]	@ tmp835, bit_0_digit
+ 1762 09e6 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp835
+ 1763 09e8 8022     		movs	r2, #128	@ tmp1085,
+ 1764 09ea 9205     		lsls	r2, r2, #22	@ tmp1085, tmp1085,
+ 1765 09ec 9446     		mov	ip, r2	@ tmp1085, tmp1085
+ 1766 09ee 6344     		add	r3, r3, ip	@ D.4826, tmp1085
+ 1767 09f0 1800     		movs	r0, r3	@, D.4824
+ 1768 09f2 FFF7FEFF 		bl	write_out	@
+ 318:code/main.c   **** 			break;
+ 1769              		.loc 1 318 0
+ 1770 09f6 19E0     		b	.L78	@
+ 1771              	.L89:
+ 319:code/main.c   **** 		case 9:
+ 320:code/main.c   **** 			bit_2_digit=9;
+ 1772              		.loc 1 320 0
+ 1773 09f8 0923     		movs	r3, #9	@ tmp836,
+ 1774 09fa 0A93     		str	r3, [sp, #40]	@ tmp836, bit_2_digit
+ 321:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1775              		.loc 1 321 0
+ 1776 09fc 099B     		ldr	r3, [sp, #36]	@ tmp837, bit_3_digit
+ 1777 09fe FA22     		movs	r2, #250	@ tmp989,
+ 1778 0a00 9200     		lsls	r2, r2, #2	@ tmp838, tmp989,
+ 1779 0a02 5A43     		muls	r2, r3	@ D.4826, tmp837
+ 1780 0a04 0A9B     		ldr	r3, [sp, #40]	@ tmp839, bit_2_digit
+ 1781 0a06 6421     		movs	r1, #100	@ tmp840,
+ 1782 0a08 4B43     		muls	r3, r1	@ D.4826, tmp840
+ 1783 0a0a D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1784 0a0c 0B9A     		ldr	r2, [sp, #44]	@ tmp841, bit_1_digit
+ 1785 0a0e 1300     		movs	r3, r2	@ tmp842, tmp841
+ 1786 0a10 9B00     		lsls	r3, r3, #2	@ tmp842, tmp842,
+ARM GAS  /tmp/cciGZpl2.s 			page 38
+
+
+ 1787 0a12 9B18     		adds	r3, r3, r2	@ tmp842, tmp842, tmp841
+ 1788 0a14 5B00     		lsls	r3, r3, #1	@ tmp843, tmp842,
+ 1789 0a16 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1790 0a18 0C9B     		ldr	r3, [sp, #48]	@ tmp844, bit_0_digit
+ 1791 0a1a D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp844
+ 1792 0a1c 8022     		movs	r2, #128	@ tmp1087,
+ 1793 0a1e 9205     		lsls	r2, r2, #22	@ tmp1087, tmp1087,
+ 1794 0a20 9446     		mov	ip, r2	@ tmp1087, tmp1087
+ 1795 0a22 6344     		add	r3, r3, ip	@ D.4826, tmp1087
+ 1796 0a24 1800     		movs	r0, r3	@, D.4824
+ 1797 0a26 FFF7FEFF 		bl	write_out	@
+ 322:code/main.c   **** 			break;
+ 1798              		.loc 1 322 0
+ 1799 0a2a C046     		nop
+ 1800              	.L78:
+ 323:code/main.c   **** 		}
+ 324:code/main.c   **** 		break;
+ 1801              		.loc 1 324 0 discriminator 3
+ 1802 0a2c A4E1     		b	.L116	@
+ 1803              	.L53:
+ 325:code/main.c   **** 	case 3:
+ 326:code/main.c   **** 		switch(digit){
+ 1804              		.loc 1 326 0
+ 1805 0a2e 109B     		ldr	r3, [sp, #64]	@ tmp845, digit
+ 1806 0a30 092B     		cmp	r3, #9	@ tmp845,
+ 1807 0a32 00D9     		bls	.LCB1554	@
+ 1808 0a34 A3E1     		b	.L117	@long jump	@
+ 1809              	.LCB1554:
+ 1810 0a36 109B     		ldr	r3, [sp, #64]	@ tmp847, digit
+ 1811 0a38 9A00     		lsls	r2, r3, #2	@ tmp846, tmp847,
+ 1812 0a3a D24B     		ldr	r3, .L122	@ tmp849,
+ 1813 0a3c D318     		adds	r3, r2, r3	@ tmp848, tmp846, tmp849
+ 1814 0a3e 1B68     		ldr	r3, [r3]	@ tmp850,
+ 1815 0a40 9F46     		mov	pc, r3	@ tmp850
+ 1816              		.section	.rodata
+ 1817              		.align	2
+ 1818              	.L92:
+ 1819 0078 420A0000 		.word	.L91
+ 1820 007c 760A0000 		.word	.L93
+ 1821 0080 AA0A0000 		.word	.L94
+ 1822 0084 DE0A0000 		.word	.L95
+ 1823 0088 120B0000 		.word	.L96
+ 1824 008c 460B0000 		.word	.L97
+ 1825 0090 7A0B0000 		.word	.L98
+ 1826 0094 AE0B0000 		.word	.L99
+ 1827 0098 E20B0000 		.word	.L100
+ 1828 009c 160C0000 		.word	.L101
+ 1829              		.text
+ 1830              	.L91:
+ 327:code/main.c   **** 		case 0: 
+ 328:code/main.c   **** 			bit_3_digit=0;
+ 1831              		.loc 1 328 0
+ 1832 0a42 0023     		movs	r3, #0	@ tmp851,
+ 1833 0a44 0993     		str	r3, [sp, #36]	@ tmp851, bit_3_digit
+ 329:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1834              		.loc 1 329 0
+ 1835 0a46 099B     		ldr	r3, [sp, #36]	@ tmp852, bit_3_digit
+ARM GAS  /tmp/cciGZpl2.s 			page 39
+
+
+ 1836 0a48 FA22     		movs	r2, #250	@ tmp988,
+ 1837 0a4a 9200     		lsls	r2, r2, #2	@ tmp853, tmp988,
+ 1838 0a4c 5A43     		muls	r2, r3	@ D.4826, tmp852
+ 1839 0a4e 0A9B     		ldr	r3, [sp, #40]	@ tmp854, bit_2_digit
+ 1840 0a50 6421     		movs	r1, #100	@ tmp855,
+ 1841 0a52 4B43     		muls	r3, r1	@ D.4826, tmp855
+ 1842 0a54 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1843 0a56 0B9A     		ldr	r2, [sp, #44]	@ tmp856, bit_1_digit
+ 1844 0a58 1300     		movs	r3, r2	@ tmp857, tmp856
+ 1845 0a5a 9B00     		lsls	r3, r3, #2	@ tmp857, tmp857,
+ 1846 0a5c 9B18     		adds	r3, r3, r2	@ tmp857, tmp857, tmp856
+ 1847 0a5e 5B00     		lsls	r3, r3, #1	@ tmp858, tmp857,
+ 1848 0a60 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1849 0a62 0C9B     		ldr	r3, [sp, #48]	@ tmp859, bit_0_digit
+ 1850 0a64 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp859
+ 1851 0a66 8022     		movs	r2, #128	@ tmp1089,
+ 1852 0a68 9205     		lsls	r2, r2, #22	@ tmp1089, tmp1089,
+ 1853 0a6a 9446     		mov	ip, r2	@ tmp1089, tmp1089
+ 1854 0a6c 6344     		add	r3, r3, ip	@ D.4826, tmp1089
+ 1855 0a6e 1800     		movs	r0, r3	@, D.4824
+ 1856 0a70 FFF7FEFF 		bl	write_out	@
+ 330:code/main.c   **** 			break;
+ 1857              		.loc 1 330 0
+ 1858 0a74 E9E0     		b	.L90	@
+ 1859              	.L93:
+ 331:code/main.c   **** 		case 1:
+ 332:code/main.c   **** 			bit_3_digit=1;
+ 1860              		.loc 1 332 0
+ 1861 0a76 0123     		movs	r3, #1	@ tmp860,
+ 1862 0a78 0993     		str	r3, [sp, #36]	@ tmp860, bit_3_digit
+ 333:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1863              		.loc 1 333 0
+ 1864 0a7a 099B     		ldr	r3, [sp, #36]	@ tmp861, bit_3_digit
+ 1865 0a7c FA22     		movs	r2, #250	@ tmp987,
+ 1866 0a7e 9200     		lsls	r2, r2, #2	@ tmp862, tmp987,
+ 1867 0a80 5A43     		muls	r2, r3	@ D.4826, tmp861
+ 1868 0a82 0A9B     		ldr	r3, [sp, #40]	@ tmp863, bit_2_digit
+ 1869 0a84 6421     		movs	r1, #100	@ tmp864,
+ 1870 0a86 4B43     		muls	r3, r1	@ D.4826, tmp864
+ 1871 0a88 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1872 0a8a 0B9A     		ldr	r2, [sp, #44]	@ tmp865, bit_1_digit
+ 1873 0a8c 1300     		movs	r3, r2	@ tmp866, tmp865
+ 1874 0a8e 9B00     		lsls	r3, r3, #2	@ tmp866, tmp866,
+ 1875 0a90 9B18     		adds	r3, r3, r2	@ tmp866, tmp866, tmp865
+ 1876 0a92 5B00     		lsls	r3, r3, #1	@ tmp867, tmp866,
+ 1877 0a94 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1878 0a96 0C9B     		ldr	r3, [sp, #48]	@ tmp868, bit_0_digit
+ 1879 0a98 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp868
+ 1880 0a9a 8022     		movs	r2, #128	@ tmp1091,
+ 1881 0a9c 9205     		lsls	r2, r2, #22	@ tmp1091, tmp1091,
+ 1882 0a9e 9446     		mov	ip, r2	@ tmp1091, tmp1091
+ 1883 0aa0 6344     		add	r3, r3, ip	@ D.4826, tmp1091
+ 1884 0aa2 1800     		movs	r0, r3	@, D.4824
+ 1885 0aa4 FFF7FEFF 		bl	write_out	@
+ 334:code/main.c   **** 			break;
+ 1886              		.loc 1 334 0
+ 1887 0aa8 CFE0     		b	.L90	@
+ARM GAS  /tmp/cciGZpl2.s 			page 40
+
+
+ 1888              	.L94:
+ 335:code/main.c   **** 		case 2:
+ 336:code/main.c   **** 			bit_3_digit=2;
+ 1889              		.loc 1 336 0
+ 1890 0aaa 0223     		movs	r3, #2	@ tmp869,
+ 1891 0aac 0993     		str	r3, [sp, #36]	@ tmp869, bit_3_digit
+ 337:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1892              		.loc 1 337 0
+ 1893 0aae 099B     		ldr	r3, [sp, #36]	@ tmp870, bit_3_digit
+ 1894 0ab0 FA22     		movs	r2, #250	@ tmp986,
+ 1895 0ab2 9200     		lsls	r2, r2, #2	@ tmp871, tmp986,
+ 1896 0ab4 5A43     		muls	r2, r3	@ D.4826, tmp870
+ 1897 0ab6 0A9B     		ldr	r3, [sp, #40]	@ tmp872, bit_2_digit
+ 1898 0ab8 6421     		movs	r1, #100	@ tmp873,
+ 1899 0aba 4B43     		muls	r3, r1	@ D.4826, tmp873
+ 1900 0abc D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1901 0abe 0B9A     		ldr	r2, [sp, #44]	@ tmp874, bit_1_digit
+ 1902 0ac0 1300     		movs	r3, r2	@ tmp875, tmp874
+ 1903 0ac2 9B00     		lsls	r3, r3, #2	@ tmp875, tmp875,
+ 1904 0ac4 9B18     		adds	r3, r3, r2	@ tmp875, tmp875, tmp874
+ 1905 0ac6 5B00     		lsls	r3, r3, #1	@ tmp876, tmp875,
+ 1906 0ac8 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1907 0aca 0C9B     		ldr	r3, [sp, #48]	@ tmp877, bit_0_digit
+ 1908 0acc D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp877
+ 1909 0ace 8022     		movs	r2, #128	@ tmp1093,
+ 1910 0ad0 9205     		lsls	r2, r2, #22	@ tmp1093, tmp1093,
+ 1911 0ad2 9446     		mov	ip, r2	@ tmp1093, tmp1093
+ 1912 0ad4 6344     		add	r3, r3, ip	@ D.4826, tmp1093
+ 1913 0ad6 1800     		movs	r0, r3	@, D.4824
+ 1914 0ad8 FFF7FEFF 		bl	write_out	@
+ 338:code/main.c   **** 			break;
+ 1915              		.loc 1 338 0
+ 1916 0adc B5E0     		b	.L90	@
+ 1917              	.L95:
+ 339:code/main.c   **** 		case 3:
+ 340:code/main.c   **** 			bit_3_digit=3;
+ 1918              		.loc 1 340 0
+ 1919 0ade 0323     		movs	r3, #3	@ tmp878,
+ 1920 0ae0 0993     		str	r3, [sp, #36]	@ tmp878, bit_3_digit
+ 341:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1921              		.loc 1 341 0
+ 1922 0ae2 099B     		ldr	r3, [sp, #36]	@ tmp879, bit_3_digit
+ 1923 0ae4 FA22     		movs	r2, #250	@ tmp985,
+ 1924 0ae6 9200     		lsls	r2, r2, #2	@ tmp880, tmp985,
+ 1925 0ae8 5A43     		muls	r2, r3	@ D.4826, tmp879
+ 1926 0aea 0A9B     		ldr	r3, [sp, #40]	@ tmp881, bit_2_digit
+ 1927 0aec 6421     		movs	r1, #100	@ tmp882,
+ 1928 0aee 4B43     		muls	r3, r1	@ D.4826, tmp882
+ 1929 0af0 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1930 0af2 0B9A     		ldr	r2, [sp, #44]	@ tmp883, bit_1_digit
+ 1931 0af4 1300     		movs	r3, r2	@ tmp884, tmp883
+ 1932 0af6 9B00     		lsls	r3, r3, #2	@ tmp884, tmp884,
+ 1933 0af8 9B18     		adds	r3, r3, r2	@ tmp884, tmp884, tmp883
+ 1934 0afa 5B00     		lsls	r3, r3, #1	@ tmp885, tmp884,
+ 1935 0afc CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1936 0afe 0C9B     		ldr	r3, [sp, #48]	@ tmp886, bit_0_digit
+ 1937 0b00 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp886
+ARM GAS  /tmp/cciGZpl2.s 			page 41
+
+
+ 1938 0b02 8022     		movs	r2, #128	@ tmp1095,
+ 1939 0b04 9205     		lsls	r2, r2, #22	@ tmp1095, tmp1095,
+ 1940 0b06 9446     		mov	ip, r2	@ tmp1095, tmp1095
+ 1941 0b08 6344     		add	r3, r3, ip	@ D.4826, tmp1095
+ 1942 0b0a 1800     		movs	r0, r3	@, D.4824
+ 1943 0b0c FFF7FEFF 		bl	write_out	@
+ 342:code/main.c   **** 			break;
+ 1944              		.loc 1 342 0
+ 1945 0b10 9BE0     		b	.L90	@
+ 1946              	.L96:
+ 343:code/main.c   **** 		case 4:
+ 344:code/main.c   **** 			bit_3_digit=4;
+ 1947              		.loc 1 344 0
+ 1948 0b12 0423     		movs	r3, #4	@ tmp887,
+ 1949 0b14 0993     		str	r3, [sp, #36]	@ tmp887, bit_3_digit
+ 345:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1950              		.loc 1 345 0
+ 1951 0b16 099B     		ldr	r3, [sp, #36]	@ tmp888, bit_3_digit
+ 1952 0b18 FA22     		movs	r2, #250	@ tmp984,
+ 1953 0b1a 9200     		lsls	r2, r2, #2	@ tmp889, tmp984,
+ 1954 0b1c 5A43     		muls	r2, r3	@ D.4826, tmp888
+ 1955 0b1e 0A9B     		ldr	r3, [sp, #40]	@ tmp890, bit_2_digit
+ 1956 0b20 6421     		movs	r1, #100	@ tmp891,
+ 1957 0b22 4B43     		muls	r3, r1	@ D.4826, tmp891
+ 1958 0b24 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1959 0b26 0B9A     		ldr	r2, [sp, #44]	@ tmp892, bit_1_digit
+ 1960 0b28 1300     		movs	r3, r2	@ tmp893, tmp892
+ 1961 0b2a 9B00     		lsls	r3, r3, #2	@ tmp893, tmp893,
+ 1962 0b2c 9B18     		adds	r3, r3, r2	@ tmp893, tmp893, tmp892
+ 1963 0b2e 5B00     		lsls	r3, r3, #1	@ tmp894, tmp893,
+ 1964 0b30 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1965 0b32 0C9B     		ldr	r3, [sp, #48]	@ tmp895, bit_0_digit
+ 1966 0b34 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp895
+ 1967 0b36 8022     		movs	r2, #128	@ tmp1097,
+ 1968 0b38 9205     		lsls	r2, r2, #22	@ tmp1097, tmp1097,
+ 1969 0b3a 9446     		mov	ip, r2	@ tmp1097, tmp1097
+ 1970 0b3c 6344     		add	r3, r3, ip	@ D.4826, tmp1097
+ 1971 0b3e 1800     		movs	r0, r3	@, D.4824
+ 1972 0b40 FFF7FEFF 		bl	write_out	@
+ 346:code/main.c   **** 			break;
+ 1973              		.loc 1 346 0
+ 1974 0b44 81E0     		b	.L90	@
+ 1975              	.L97:
+ 347:code/main.c   **** 		case 5:
+ 348:code/main.c   **** 			bit_3_digit=5;
+ 1976              		.loc 1 348 0
+ 1977 0b46 0523     		movs	r3, #5	@ tmp896,
+ 1978 0b48 0993     		str	r3, [sp, #36]	@ tmp896, bit_3_digit
+ 349:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 1979              		.loc 1 349 0
+ 1980 0b4a 099B     		ldr	r3, [sp, #36]	@ tmp897, bit_3_digit
+ 1981 0b4c FA22     		movs	r2, #250	@ tmp983,
+ 1982 0b4e 9200     		lsls	r2, r2, #2	@ tmp898, tmp983,
+ 1983 0b50 5A43     		muls	r2, r3	@ D.4826, tmp897
+ 1984 0b52 0A9B     		ldr	r3, [sp, #40]	@ tmp899, bit_2_digit
+ 1985 0b54 6421     		movs	r1, #100	@ tmp900,
+ 1986 0b56 4B43     		muls	r3, r1	@ D.4826, tmp900
+ARM GAS  /tmp/cciGZpl2.s 			page 42
+
+
+ 1987 0b58 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 1988 0b5a 0B9A     		ldr	r2, [sp, #44]	@ tmp901, bit_1_digit
+ 1989 0b5c 1300     		movs	r3, r2	@ tmp902, tmp901
+ 1990 0b5e 9B00     		lsls	r3, r3, #2	@ tmp902, tmp902,
+ 1991 0b60 9B18     		adds	r3, r3, r2	@ tmp902, tmp902, tmp901
+ 1992 0b62 5B00     		lsls	r3, r3, #1	@ tmp903, tmp902,
+ 1993 0b64 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 1994 0b66 0C9B     		ldr	r3, [sp, #48]	@ tmp904, bit_0_digit
+ 1995 0b68 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp904
+ 1996 0b6a 8022     		movs	r2, #128	@ tmp1099,
+ 1997 0b6c 9205     		lsls	r2, r2, #22	@ tmp1099, tmp1099,
+ 1998 0b6e 9446     		mov	ip, r2	@ tmp1099, tmp1099
+ 1999 0b70 6344     		add	r3, r3, ip	@ D.4826, tmp1099
+ 2000 0b72 1800     		movs	r0, r3	@, D.4824
+ 2001 0b74 FFF7FEFF 		bl	write_out	@
+ 350:code/main.c   **** 			break;
+ 2002              		.loc 1 350 0
+ 2003 0b78 67E0     		b	.L90	@
+ 2004              	.L98:
+ 351:code/main.c   **** 		case 6:
+ 352:code/main.c   **** 			bit_3_digit=6;
+ 2005              		.loc 1 352 0
+ 2006 0b7a 0623     		movs	r3, #6	@ tmp905,
+ 2007 0b7c 0993     		str	r3, [sp, #36]	@ tmp905, bit_3_digit
+ 353:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 2008              		.loc 1 353 0
+ 2009 0b7e 099B     		ldr	r3, [sp, #36]	@ tmp906, bit_3_digit
+ 2010 0b80 FA22     		movs	r2, #250	@ tmp982,
+ 2011 0b82 9200     		lsls	r2, r2, #2	@ tmp907, tmp982,
+ 2012 0b84 5A43     		muls	r2, r3	@ D.4826, tmp906
+ 2013 0b86 0A9B     		ldr	r3, [sp, #40]	@ tmp908, bit_2_digit
+ 2014 0b88 6421     		movs	r1, #100	@ tmp909,
+ 2015 0b8a 4B43     		muls	r3, r1	@ D.4826, tmp909
+ 2016 0b8c D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 2017 0b8e 0B9A     		ldr	r2, [sp, #44]	@ tmp910, bit_1_digit
+ 2018 0b90 1300     		movs	r3, r2	@ tmp911, tmp910
+ 2019 0b92 9B00     		lsls	r3, r3, #2	@ tmp911, tmp911,
+ 2020 0b94 9B18     		adds	r3, r3, r2	@ tmp911, tmp911, tmp910
+ 2021 0b96 5B00     		lsls	r3, r3, #1	@ tmp912, tmp911,
+ 2022 0b98 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 2023 0b9a 0C9B     		ldr	r3, [sp, #48]	@ tmp913, bit_0_digit
+ 2024 0b9c D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp913
+ 2025 0b9e 8022     		movs	r2, #128	@ tmp1101,
+ 2026 0ba0 9205     		lsls	r2, r2, #22	@ tmp1101, tmp1101,
+ 2027 0ba2 9446     		mov	ip, r2	@ tmp1101, tmp1101
+ 2028 0ba4 6344     		add	r3, r3, ip	@ D.4826, tmp1101
+ 2029 0ba6 1800     		movs	r0, r3	@, D.4824
+ 2030 0ba8 FFF7FEFF 		bl	write_out	@
+ 354:code/main.c   **** 			break;
+ 2031              		.loc 1 354 0
+ 2032 0bac 4DE0     		b	.L90	@
+ 2033              	.L99:
+ 355:code/main.c   **** 		case 7:
+ 356:code/main.c   **** 			bit_3_digit=7;
+ 2034              		.loc 1 356 0
+ 2035 0bae 0723     		movs	r3, #7	@ tmp914,
+ 2036 0bb0 0993     		str	r3, [sp, #36]	@ tmp914, bit_3_digit
+ARM GAS  /tmp/cciGZpl2.s 			page 43
+
+
+ 357:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 2037              		.loc 1 357 0
+ 2038 0bb2 099B     		ldr	r3, [sp, #36]	@ tmp915, bit_3_digit
+ 2039 0bb4 FA22     		movs	r2, #250	@ tmp981,
+ 2040 0bb6 9200     		lsls	r2, r2, #2	@ tmp916, tmp981,
+ 2041 0bb8 5A43     		muls	r2, r3	@ D.4826, tmp915
+ 2042 0bba 0A9B     		ldr	r3, [sp, #40]	@ tmp917, bit_2_digit
+ 2043 0bbc 6421     		movs	r1, #100	@ tmp918,
+ 2044 0bbe 4B43     		muls	r3, r1	@ D.4826, tmp918
+ 2045 0bc0 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 2046 0bc2 0B9A     		ldr	r2, [sp, #44]	@ tmp919, bit_1_digit
+ 2047 0bc4 1300     		movs	r3, r2	@ tmp920, tmp919
+ 2048 0bc6 9B00     		lsls	r3, r3, #2	@ tmp920, tmp920,
+ 2049 0bc8 9B18     		adds	r3, r3, r2	@ tmp920, tmp920, tmp919
+ 2050 0bca 5B00     		lsls	r3, r3, #1	@ tmp921, tmp920,
+ 2051 0bcc CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 2052 0bce 0C9B     		ldr	r3, [sp, #48]	@ tmp922, bit_0_digit
+ 2053 0bd0 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp922
+ 2054 0bd2 8022     		movs	r2, #128	@ tmp1103,
+ 2055 0bd4 9205     		lsls	r2, r2, #22	@ tmp1103, tmp1103,
+ 2056 0bd6 9446     		mov	ip, r2	@ tmp1103, tmp1103
+ 2057 0bd8 6344     		add	r3, r3, ip	@ D.4826, tmp1103
+ 2058 0bda 1800     		movs	r0, r3	@, D.4824
+ 2059 0bdc FFF7FEFF 		bl	write_out	@
+ 358:code/main.c   **** 			break;
+ 2060              		.loc 1 358 0
+ 2061 0be0 33E0     		b	.L90	@
+ 2062              	.L100:
+ 359:code/main.c   **** 		case 8:
+ 360:code/main.c   **** 			bit_3_digit=8;
+ 2063              		.loc 1 360 0
+ 2064 0be2 0823     		movs	r3, #8	@ tmp923,
+ 2065 0be4 0993     		str	r3, [sp, #36]	@ tmp923, bit_3_digit
+ 361:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 2066              		.loc 1 361 0
+ 2067 0be6 099B     		ldr	r3, [sp, #36]	@ tmp924, bit_3_digit
+ 2068 0be8 FA22     		movs	r2, #250	@ tmp980,
+ 2069 0bea 9200     		lsls	r2, r2, #2	@ tmp925, tmp980,
+ 2070 0bec 5A43     		muls	r2, r3	@ D.4826, tmp924
+ 2071 0bee 0A9B     		ldr	r3, [sp, #40]	@ tmp926, bit_2_digit
+ 2072 0bf0 6421     		movs	r1, #100	@ tmp927,
+ 2073 0bf2 4B43     		muls	r3, r1	@ D.4826, tmp927
+ 2074 0bf4 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 2075 0bf6 0B9A     		ldr	r2, [sp, #44]	@ tmp928, bit_1_digit
+ 2076 0bf8 1300     		movs	r3, r2	@ tmp929, tmp928
+ 2077 0bfa 9B00     		lsls	r3, r3, #2	@ tmp929, tmp929,
+ 2078 0bfc 9B18     		adds	r3, r3, r2	@ tmp929, tmp929, tmp928
+ 2079 0bfe 5B00     		lsls	r3, r3, #1	@ tmp930, tmp929,
+ 2080 0c00 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 2081 0c02 0C9B     		ldr	r3, [sp, #48]	@ tmp931, bit_0_digit
+ 2082 0c04 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp931
+ 2083 0c06 8022     		movs	r2, #128	@ tmp1105,
+ 2084 0c08 9205     		lsls	r2, r2, #22	@ tmp1105, tmp1105,
+ 2085 0c0a 9446     		mov	ip, r2	@ tmp1105, tmp1105
+ 2086 0c0c 6344     		add	r3, r3, ip	@ D.4826, tmp1105
+ 2087 0c0e 1800     		movs	r0, r3	@, D.4824
+ 2088 0c10 FFF7FEFF 		bl	write_out	@
+ARM GAS  /tmp/cciGZpl2.s 			page 44
+
+
+ 362:code/main.c   **** 			break;
+ 2089              		.loc 1 362 0
+ 2090 0c14 19E0     		b	.L90	@
+ 2091              	.L101:
+ 363:code/main.c   **** 		case 9:
+ 364:code/main.c   **** 			bit_3_digit=9;
+ 2092              		.loc 1 364 0
+ 2093 0c16 0923     		movs	r3, #9	@ tmp932,
+ 2094 0c18 0993     		str	r3, [sp, #36]	@ tmp932, bit_3_digit
+ 365:code/main.c   **** 			write_out(bit_3_digit*1000+bit_2_digit*100+bit_1_digit*10+bit_0_digit+536870912);
+ 2095              		.loc 1 365 0
+ 2096 0c1a 099B     		ldr	r3, [sp, #36]	@ tmp933, bit_3_digit
+ 2097 0c1c FA22     		movs	r2, #250	@ tmp979,
+ 2098 0c1e 9200     		lsls	r2, r2, #2	@ tmp934, tmp979,
+ 2099 0c20 5A43     		muls	r2, r3	@ D.4826, tmp933
+ 2100 0c22 0A9B     		ldr	r3, [sp, #40]	@ tmp935, bit_2_digit
+ 2101 0c24 6421     		movs	r1, #100	@ tmp936,
+ 2102 0c26 4B43     		muls	r3, r1	@ D.4826, tmp936
+ 2103 0c28 D118     		adds	r1, r2, r3	@ D.4826, D.4826, D.4826
+ 2104 0c2a 0B9A     		ldr	r2, [sp, #44]	@ tmp937, bit_1_digit
+ 2105 0c2c 1300     		movs	r3, r2	@ tmp938, tmp937
+ 2106 0c2e 9B00     		lsls	r3, r3, #2	@ tmp938, tmp938,
+ 2107 0c30 9B18     		adds	r3, r3, r2	@ tmp938, tmp938, tmp937
+ 2108 0c32 5B00     		lsls	r3, r3, #1	@ tmp939, tmp938,
+ 2109 0c34 CA18     		adds	r2, r1, r3	@ D.4826, D.4826, D.4826
+ 2110 0c36 0C9B     		ldr	r3, [sp, #48]	@ tmp940, bit_0_digit
+ 2111 0c38 D318     		adds	r3, r2, r3	@ D.4826, D.4826, tmp940
+ 2112 0c3a 8022     		movs	r2, #128	@ tmp1107,
+ 2113 0c3c 9205     		lsls	r2, r2, #22	@ tmp1107, tmp1107,
+ 2114 0c3e 9446     		mov	ip, r2	@ tmp1107, tmp1107
+ 2115 0c40 6344     		add	r3, r3, ip	@ D.4826, tmp1107
+ 2116 0c42 1800     		movs	r0, r3	@, D.4824
+ 2117 0c44 FFF7FEFF 		bl	write_out	@
+ 366:code/main.c   **** 			break;
+ 2118              		.loc 1 366 0
+ 2119 0c48 C046     		nop
+ 2120              	.L90:
+ 367:code/main.c   **** 		}
+ 368:code/main.c   **** 	        break;
+ 2121              		.loc 1 368 0 discriminator 4
+ 2122 0c4a C046     		nop
+ 2123 0c4c 97E0     		b	.L117	@
+ 2124              	.L40:
+ 369:code/main.c   **** 		}
+ 370:code/main.c   **** }
+ 371:code/main.c   **** else {
+ 372:code/main.c   ****        if((button_mode>=320)&&(button_trip==0)){
+ 2125              		.loc 1 372 0
+ 2126 0c4e 079A     		ldr	r2, [sp, #28]	@ tmp941, button_mode
+ 2127 0c50 4023     		movs	r3, #64	@ tmp978,
+ 2128 0c52 FF33     		adds	r3, r3, #255	@ tmp942,
+ 2129 0c54 9A42     		cmp	r2, r3	@ tmp941, tmp942
+ 2130 0c56 04DD     		ble	.L103	@,
+ 2131              		.loc 1 372 0 is_stmt 0 discriminator 1
+ 2132 0c58 089B     		ldr	r3, [sp, #32]	@ tmp943, button_trip
+ 2133 0c5a 002B     		cmp	r3, #0	@ tmp943,
+ 2134 0c5c 01D1     		bne	.L103	@,
+ARM GAS  /tmp/cciGZpl2.s 			page 45
+
+
+ 373:code/main.c   ****          press_mode=1;
+ 2135              		.loc 1 373 0 is_stmt 1
+ 2136 0c5e 0123     		movs	r3, #1	@ tmp944,
+ 2137 0c60 0F93     		str	r3, [sp, #60]	@ tmp944, press_mode
+ 2138              	.L103:
+ 374:code/main.c   ****        }
+ 375:code/main.c   ****        if((button_mode==0)&&(press_mode==1)&&(button_trip==0)){
+ 2139              		.loc 1 375 0
+ 2140 0c62 079B     		ldr	r3, [sp, #28]	@ tmp945, button_mode
+ 2141 0c64 002B     		cmp	r3, #0	@ tmp945,
+ 2142 0c66 12D1     		bne	.L104	@,
+ 2143              		.loc 1 375 0 is_stmt 0 discriminator 1
+ 2144 0c68 0F9B     		ldr	r3, [sp, #60]	@ tmp946, press_mode
+ 2145 0c6a 012B     		cmp	r3, #1	@ tmp946,
+ 2146 0c6c 0FD1     		bne	.L104	@,
+ 2147              		.loc 1 375 0 discriminator 2
+ 2148 0c6e 089B     		ldr	r3, [sp, #32]	@ tmp947, button_trip
+ 2149 0c70 002B     		cmp	r3, #0	@ tmp947,
+ 2150 0c72 0CD1     		bne	.L104	@,
+ 376:code/main.c   ****        if(state<5){
+ 2151              		.loc 1 376 0 is_stmt 1
+ 2152 0c74 159B     		ldr	r3, [sp, #84]	@ tmp948, state
+ 2153 0c76 042B     		cmp	r3, #4	@ tmp948,
+ 2154 0c78 05DC     		bgt	.L105	@,
+ 377:code/main.c   ****          state=state+1;
+ 2155              		.loc 1 377 0
+ 2156 0c7a 159B     		ldr	r3, [sp, #84]	@ tmp950, state
+ 2157 0c7c 0133     		adds	r3, r3, #1	@ tmp949,
+ 2158 0c7e 1593     		str	r3, [sp, #84]	@ tmp949, state
+ 378:code/main.c   **** 	 press_mode=0;
+ 2159              		.loc 1 378 0
+ 2160 0c80 0023     		movs	r3, #0	@ tmp951,
+ 2161 0c82 0F93     		str	r3, [sp, #60]	@ tmp951, press_mode
+ 2162 0c84 03E0     		b	.L104	@
+ 2163              	.L105:
+ 379:code/main.c   **** 	 }
+ 380:code/main.c   **** 	 else{
+ 381:code/main.c   **** 	 state=0;
+ 2164              		.loc 1 381 0
+ 2165 0c86 0023     		movs	r3, #0	@ tmp952,
+ 2166 0c88 1593     		str	r3, [sp, #84]	@ tmp952, state
+ 382:code/main.c   **** 	 press_mode=0;
+ 2167              		.loc 1 382 0
+ 2168 0c8a 0023     		movs	r3, #0	@ tmp953,
+ 2169 0c8c 0F93     		str	r3, [sp, #60]	@ tmp953, press_mode
+ 2170              	.L104:
+ 383:code/main.c   **** 	 }
+ 384:code/main.c   **** 	 }
+ 385:code/main.c   ****        switch (state){
+ 2171              		.loc 1 385 0
+ 2172 0c8e 159B     		ldr	r3, [sp, #84]	@ tmp954, state
+ 2173 0c90 052B     		cmp	r3, #5	@ tmp954,
+ 2174 0c92 01D9     		bls	.LCB1892	@
+ 2175 0c94 FFF7C8FA 		bl	.L113	@far jump	@
+ 2176              	.LCB1892:
+ 2177 0c98 159B     		ldr	r3, [sp, #84]	@ tmp956, state
+ 2178 0c9a 9A00     		lsls	r2, r3, #2	@ tmp955, tmp956,
+ARM GAS  /tmp/cciGZpl2.s 			page 46
+
+
+ 2179 0c9c 3A4B     		ldr	r3, .L122+4	@ tmp958,
+ 2180 0c9e D318     		adds	r3, r2, r3	@ tmp957, tmp955, tmp958
+ 2181 0ca0 1B68     		ldr	r3, [r3]	@ tmp959,
+ 2182 0ca2 9F46     		mov	pc, r3	@ tmp959
+ 2183              		.section	.rodata
+ 2184              		.align	2
+ 2185              	.L107:
+ 2186 00a0 A40C0000 		.word	.L106
+ 2187 00a4 C40C0000 		.word	.L108
+ 2188 00a8 E00C0000 		.word	.L109
+ 2189 00ac FC0C0000 		.word	.L110
+ 2190 00b0 060D0000 		.word	.L111
+ 2191 00b4 180D0000 		.word	.L112
+ 2192              		.text
+ 2193              	.L106:
+ 386:code/main.c   ****        case 0: 
+ 387:code/main.c   ****        switch_count_of_fork=read_switches(2);
+ 2194              		.loc 1 387 0
+ 2195 0ca4 0220     		movs	r0, #2	@,
+ 2196 0ca6 FFF7FEFF 		bl	read_switches	@
+ 2197 0caa 0300     		movs	r3, r0	@ D.4824,
+ 2198 0cac 0693     		str	r3, [sp, #24]	@ D.4824, switch_count_of_fork
+ 388:code/main.c   ****        write_out(distance(switch_count_of_fork, circumference));
+ 2199              		.loc 1 388 0
+ 2200 0cae 139A     		ldr	r2, [sp, #76]	@ tmp960, circumference
+ 2201 0cb0 069B     		ldr	r3, [sp, #24]	@ tmp961, switch_count_of_fork
+ 2202 0cb2 1100     		movs	r1, r2	@, tmp960
+ 2203 0cb4 1800     		movs	r0, r3	@, tmp961
+ 2204 0cb6 FFF7FEFF 		bl	distance	@
+ 2205 0cba 0300     		movs	r3, r0	@ D.4826,
+ 2206 0cbc 1800     		movs	r0, r3	@, D.4824
+ 2207 0cbe FFF7FEFF 		bl	write_out	@
+ 389:code/main.c   ****        break;
+ 2208              		.loc 1 389 0
+ 2209 0cc2 5DE0     		b	.L102	@
+ 2210              	.L108:
+ 390:code/main.c   ****        case 1: 
+ 391:code/main.c   ****        switch_count_of_total_time=read_switches(3);
+ 2211              		.loc 1 391 0
+ 2212 0cc4 0320     		movs	r0, #3	@,
+ 2213 0cc6 FFF7FEFF 		bl	read_switches	@
+ 2214 0cca 0300     		movs	r3, r0	@ D.4824,
+ 2215 0ccc 0593     		str	r3, [sp, #20]	@ D.4824, switch_count_of_total_time
+ 392:code/main.c   ****        write_out(timer(switch_count_of_total_time));
+ 2216              		.loc 1 392 0
+ 2217 0cce 059B     		ldr	r3, [sp, #20]	@ tmp962, switch_count_of_total_time
+ 2218 0cd0 1800     		movs	r0, r3	@, tmp962
+ 2219 0cd2 FFF7FEFF 		bl	timer	@
+ 2220 0cd6 0300     		movs	r3, r0	@ D.4826,
+ 2221 0cd8 1800     		movs	r0, r3	@, D.4824
+ 2222 0cda FFF7FEFF 		bl	write_out	@
+ 393:code/main.c   ****        break;
+ 2223              		.loc 1 393 0
+ 2224 0cde 4FE0     		b	.L102	@
+ 2225              	.L109:
+ 394:code/main.c   ****        case 2: 
+ 395:code/main.c   ****        switch_count_of_time_per_cycle_of_crank=read_switches(4);       
+ARM GAS  /tmp/cciGZpl2.s 			page 47
+
+
+ 2226              		.loc 1 395 0
+ 2227 0ce0 0420     		movs	r0, #4	@,
+ 2228 0ce2 FFF7FEFF 		bl	read_switches	@
+ 2229 0ce6 0300     		movs	r3, r0	@ D.4824,
+ 2230 0ce8 0493     		str	r3, [sp, #16]	@ D.4824, switch_count_of_time_per_cycle_of_crank
+ 396:code/main.c   ****        write_out(rpm(switch_count_of_time_per_cycle_of_crank));
+ 2231              		.loc 1 396 0
+ 2232 0cea 049B     		ldr	r3, [sp, #16]	@ tmp963, switch_count_of_time_per_cycle_of_crank
+ 2233 0cec 1800     		movs	r0, r3	@, tmp963
+ 2234 0cee FFF7FEFF 		bl	rpm	@
+ 2235 0cf2 0300     		movs	r3, r0	@ D.4826,
+ 2236 0cf4 1800     		movs	r0, r3	@, D.4824
+ 2237 0cf6 FFF7FEFF 		bl	write_out	@
+ 397:code/main.c   ****        break; 
+ 2238              		.loc 1 397 0
+ 2239 0cfa 41E0     		b	.L102	@
+ 2240              	.L110:
+ 398:code/main.c   ****        case 3:
+ 399:code/main.c   ****        write_out(current_speed);
+ 2241              		.loc 1 399 0
+ 2242 0cfc 029B     		ldr	r3, [sp, #8]	@ D.4824, current_speed
+ 2243 0cfe 1800     		movs	r0, r3	@, D.4824
+ 2244 0d00 FFF7FEFF 		bl	write_out	@
+ 400:code/main.c   ****        break;
+ 2245              		.loc 1 400 0
+ 2246 0d04 3CE0     		b	.L102	@
+ 2247              	.L111:
+ 401:code/main.c   ****        case 4:
+ 402:code/main.c   ****        write_out(max_speed+3221225472);       //high 3 digits are 110
+ 2248              		.loc 1 402 0
+ 2249 0d06 129B     		ldr	r3, [sp, #72]	@ D.4824, max_speed
+ 2250 0d08 C022     		movs	r2, #192	@ tmp1109,
+ 2251 0d0a 1206     		lsls	r2, r2, #24	@ tmp1109, tmp1109,
+ 2252 0d0c 9446     		mov	ip, r2	@ tmp1109, tmp1109
+ 2253 0d0e 6344     		add	r3, r3, ip	@ D.4824, tmp1109
+ 2254 0d10 1800     		movs	r0, r3	@, D.4824
+ 2255 0d12 FFF7FEFF 		bl	write_out	@
+ 403:code/main.c   ****        break;
+ 2256              		.loc 1 403 0
+ 2257 0d16 33E0     		b	.L102	@
+ 2258              	.L112:
+ 404:code/main.c   ****        case 5:
+ 405:code/main.c   ****        switch_count_of_fork=read_switches(2);
+ 2259              		.loc 1 405 0
+ 2260 0d18 0220     		movs	r0, #2	@,
+ 2261 0d1a FFF7FEFF 		bl	read_switches	@
+ 2262 0d1e 0300     		movs	r3, r0	@ D.4824,
+ 2263 0d20 0693     		str	r3, [sp, #24]	@ D.4824, switch_count_of_fork
+ 406:code/main.c   ****        switch_count_of_total_time=read_switches(3);
+ 2264              		.loc 1 406 0
+ 2265 0d22 0320     		movs	r0, #3	@,
+ 2266 0d24 FFF7FEFF 		bl	read_switches	@
+ 2267 0d28 0300     		movs	r3, r0	@ D.4824,
+ 2268 0d2a 0593     		str	r3, [sp, #20]	@ D.4824, switch_count_of_total_time
+ 407:code/main.c   ****        write_out((switch_count_of_fork*circumference*10/1000000)/(switch_count_of_total_time/(12800
+ 2269              		.loc 1 407 0
+ 2270 0d2c 069B     		ldr	r3, [sp, #24]	@ tmp964, switch_count_of_fork
+ARM GAS  /tmp/cciGZpl2.s 			page 48
+
+
+ 2271 0d2e 139A     		ldr	r2, [sp, #76]	@ tmp965, circumference
+ 2272 0d30 5A43     		muls	r2, r3	@ D.4826, tmp964
+ 2273 0d32 1300     		movs	r3, r2	@ tmp966, D.4826
+ 2274 0d34 9B00     		lsls	r3, r3, #2	@ tmp966, tmp966,
+ 2275 0d36 9B18     		adds	r3, r3, r2	@ tmp966, tmp966, D.4826
+ 2276 0d38 5B00     		lsls	r3, r3, #1	@ tmp967, tmp966,
+ 2277 0d3a 1449     		ldr	r1, .L122+8	@,
+ 2278 0d3c 1800     		movs	r0, r3	@, D.4826
+ 2279 0d3e FFF7FEFF 		bl	__aeabi_idiv	@
+ 2280 0d42 0300     		movs	r3, r0	@ tmp970,
+ 2281 0d44 1C00     		movs	r4, r3	@ D.4826, tmp970
+ 2282 0d46 059B     		ldr	r3, [sp, #20]	@ tmp971, switch_count_of_total_time
+ 2283 0d48 1149     		ldr	r1, .L122+12	@,
+ 2284 0d4a 1800     		movs	r0, r3	@, tmp971
+ 2285 0d4c FFF7FEFF 		bl	__aeabi_idiv	@
+ 2286 0d50 0300     		movs	r3, r0	@ tmp974,
+ 2287 0d52 1900     		movs	r1, r3	@, D.4826
+ 2288 0d54 2000     		movs	r0, r4	@, D.4826
+ 2289 0d56 FFF7FEFF 		bl	__aeabi_idiv	@
+ 2290 0d5a 0300     		movs	r3, r0	@ tmp977,
+ 2291 0d5c E022     		movs	r2, #224	@ tmp1111,
+ 2292 0d5e 1206     		lsls	r2, r2, #24	@ tmp1111, tmp1111,
+ 2293 0d60 9446     		mov	ip, r2	@ tmp1111, tmp1111
+ 2294 0d62 6344     		add	r3, r3, ip	@ D.4824, tmp1111
+ 2295 0d64 1800     		movs	r0, r3	@, D.4824
+ 2296 0d66 FFF7FEFF 		bl	write_out	@
+ 408:code/main.c   ****        break;
+ 2297              		.loc 1 408 0
+ 2298 0d6a 09E0     		b	.L102	@
+ 2299              	.L114:
+ 236:code/main.c   **** 	case 1:
+ 2300              		.loc 1 236 0
+ 2301 0d6c C046     		nop
+ 2302 0d6e FFF75BFA 		bl	.L113	@ far jump	@
+ 2303              	.L115:
+ 280:code/main.c   **** 	case 2:
+ 2304              		.loc 1 280 0
+ 2305 0d72 C046     		nop
+ 2306 0d74 FFF758FA 		bl	.L113	@ far jump	@
+ 2307              	.L116:
+ 324:code/main.c   **** 	case 3:
+ 2308              		.loc 1 324 0
+ 2309 0d78 C046     		nop
+ 2310 0d7a FFF755FA 		bl	.L113	@ far jump	@
+ 2311              	.L117:
+ 368:code/main.c   **** 		}
+ 2312              		.loc 1 368 0
+ 2313 0d7e C046     		nop
+ 2314              	.L102:
+ 409:code/main.c   ****        }
+ 410:code/main.c   ****        }
+ 411:code/main.c   **** }
+ 2315              		.loc 1 411 0 discriminator 5
+ 2316 0d80 FFF752FA 		bl	.L113	@ far jump	@
+ 2317              	.L123:
+ 2318              		.align	2
+ 2319              	.L122:
+ARM GAS  /tmp/cciGZpl2.s 			page 49
+
+
+ 2320 0d84 78000000 		.word	.L92
+ 2321 0d88 A0000000 		.word	.L107
+ 2322 0d8c 40420F00 		.word	1000000
+ 2323 0d90 0020BF02 		.word	46080000
+ 2324              		.cfi_endproc
+ 2325              	.LFE8:
+ 2326              		.size	main, .-main
+ 2327              	.Letext0:
+ 2328              		.file 2 "/srv/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/machine/_default_types.h"
+ 2329              		.file 3 "/srv/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/sys/_stdint.h"
+ 2330              		.section	.debug_info,"",%progbits
+ 2331              	.Ldebug_info0:
+ 2332 0000 21040000 		.4byte	0x421
+ 2333 0004 0200     		.2byte	0x2
+ 2334 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 2335 000a 04       		.byte	0x4
+ 2336 000b 01       		.uleb128 0x1
+ 2337 000c 4F020000 		.4byte	.LASF50
+ 2338 0010 0C       		.byte	0xc
+ 2339 0011 F6000000 		.4byte	.LASF51
+ 2340 0015 5F000000 		.4byte	.LASF52
+ 2341 0019 00000000 		.4byte	.Ltext0
+ 2342 001d 940D0000 		.4byte	.Letext0
+ 2343 0021 00000000 		.4byte	.Ldebug_line0
+ 2344 0025 02       		.uleb128 0x2
+ 2345 0026 01       		.byte	0x1
+ 2346 0027 06       		.byte	0x6
+ 2347 0028 5F010000 		.4byte	.LASF0
+ 2348 002c 02       		.uleb128 0x2
+ 2349 002d 01       		.byte	0x1
+ 2350 002e 08       		.byte	0x8
+ 2351 002f 36010000 		.4byte	.LASF1
+ 2352 0033 02       		.uleb128 0x2
+ 2353 0034 02       		.byte	0x2
+ 2354 0035 05       		.byte	0x5
+ 2355 0036 4B000000 		.4byte	.LASF2
+ 2356 003a 02       		.uleb128 0x2
+ 2357 003b 02       		.byte	0x2
+ 2358 003c 07       		.byte	0x7
+ 2359 003d B7010000 		.4byte	.LASF3
+ 2360 0041 02       		.uleb128 0x2
+ 2361 0042 04       		.byte	0x4
+ 2362 0043 05       		.byte	0x5
+ 2363 0044 E8000000 		.4byte	.LASF4
+ 2364 0048 03       		.uleb128 0x3
+ 2365 0049 86000000 		.4byte	.LASF9
+ 2366 004d 02       		.byte	0x2
+ 2367 004e 41       		.byte	0x41
+ 2368 004f 53000000 		.4byte	0x53
+ 2369 0053 02       		.uleb128 0x2
+ 2370 0054 04       		.byte	0x4
+ 2371 0055 07       		.byte	0x7
+ 2372 0056 E6010000 		.4byte	.LASF5
+ 2373 005a 02       		.uleb128 0x2
+ 2374 005b 08       		.byte	0x8
+ 2375 005c 05       		.byte	0x5
+ 2376 005d DA000000 		.4byte	.LASF6
+ARM GAS  /tmp/cciGZpl2.s 			page 50
+
+
+ 2377 0061 02       		.uleb128 0x2
+ 2378 0062 08       		.byte	0x8
+ 2379 0063 07       		.byte	0x7
+ 2380 0064 6B010000 		.4byte	.LASF7
+ 2381 0068 04       		.uleb128 0x4
+ 2382 0069 04       		.byte	0x4
+ 2383 006a 05       		.byte	0x5
+ 2384 006b 696E7400 		.ascii	"int\000"
+ 2385 006f 02       		.uleb128 0x2
+ 2386 0070 04       		.byte	0x4
+ 2387 0071 07       		.byte	0x7
+ 2388 0072 8B010000 		.4byte	.LASF8
+ 2389 0076 03       		.uleb128 0x3
+ 2390 0077 82010000 		.4byte	.LASF10
+ 2391 007b 03       		.byte	0x3
+ 2392 007c 30       		.byte	0x30
+ 2393 007d 48000000 		.4byte	0x48
+ 2394 0081 05       		.uleb128 0x5
+ 2395 0082 01       		.byte	0x1
+ 2396 0083 55000000 		.4byte	.LASF13
+ 2397 0087 01       		.byte	0x1
+ 2398 0088 17       		.byte	0x17
+ 2399 0089 01       		.byte	0x1
+ 2400 008a 00000000 		.4byte	.LFB0
+ 2401 008e 20000000 		.4byte	.LFE0
+ 2402 0092 00000000 		.4byte	.LLST0
+ 2403 0096 01       		.byte	0x1
+ 2404 0097 AA000000 		.4byte	0xaa
+ 2405 009b 06       		.uleb128 0x6
+ 2406 009c 98000000 		.4byte	.LASF11
+ 2407 00a0 01       		.byte	0x1
+ 2408 00a1 17       		.byte	0x17
+ 2409 00a2 76000000 		.4byte	0x76
+ 2410 00a6 02       		.byte	0x2
+ 2411 00a7 91       		.byte	0x91
+ 2412 00a8 7C       		.sleb128 -4
+ 2413 00a9 00       		.byte	0
+ 2414 00aa 07       		.uleb128 0x7
+ 2415 00ab 01       		.byte	0x1
+ 2416 00ac 27000000 		.4byte	.LASF53
+ 2417 00b0 01       		.byte	0x1
+ 2418 00b1 1C       		.byte	0x1c
+ 2419 00b2 01       		.byte	0x1
+ 2420 00b3 76000000 		.4byte	0x76
+ 2421 00b7 20000000 		.4byte	.LFB1
+ 2422 00bb 30000000 		.4byte	.LFE1
+ 2423 00bf 02       		.byte	0x2
+ 2424 00c0 7D       		.byte	0x7d
+ 2425 00c1 00       		.sleb128 0
+ 2426 00c2 01       		.byte	0x1
+ 2427 00c3 08       		.uleb128 0x8
+ 2428 00c4 01       		.byte	0x1
+ 2429 00c5 BB000000 		.4byte	.LASF15
+ 2430 00c9 01       		.byte	0x1
+ 2431 00ca 20       		.byte	0x20
+ 2432 00cb 01       		.byte	0x1
+ 2433 00cc 76000000 		.4byte	0x76
+ARM GAS  /tmp/cciGZpl2.s 			page 51
+
+
+ 2434 00d0 30000000 		.4byte	.LFB2
+ 2435 00d4 4C000000 		.4byte	.LFE2
+ 2436 00d8 20000000 		.4byte	.LLST1
+ 2437 00dc 01       		.byte	0x1
+ 2438 00dd F0000000 		.4byte	0xf0
+ 2439 00e1 06       		.uleb128 0x6
+ 2440 00e2 F1000000 		.4byte	.LASF12
+ 2441 00e6 01       		.byte	0x1
+ 2442 00e7 20       		.byte	0x20
+ 2443 00e8 68000000 		.4byte	0x68
+ 2444 00ec 02       		.byte	0x2
+ 2445 00ed 91       		.byte	0x91
+ 2446 00ee 7C       		.sleb128 -4
+ 2447 00ef 00       		.byte	0
+ 2448 00f0 05       		.uleb128 0x5
+ 2449 00f1 01       		.byte	0x1
+ 2450 00f2 1E000000 		.4byte	.LASF14
+ 2451 00f6 01       		.byte	0x1
+ 2452 00f7 26       		.byte	0x26
+ 2453 00f8 01       		.byte	0x1
+ 2454 00f9 4C000000 		.4byte	.LFB3
+ 2455 00fd 78000000 		.4byte	.LFE3
+ 2456 0101 40000000 		.4byte	.LLST2
+ 2457 0105 01       		.byte	0x1
+ 2458 0106 23010000 		.4byte	0x123
+ 2459 010a 09       		.uleb128 0x9
+ 2460 010b 6900     		.ascii	"i\000"
+ 2461 010d 01       		.byte	0x1
+ 2462 010e 28       		.byte	0x28
+ 2463 010f 68000000 		.4byte	0x68
+ 2464 0113 02       		.byte	0x2
+ 2465 0114 91       		.byte	0x91
+ 2466 0115 7C       		.sleb128 -4
+ 2467 0116 09       		.uleb128 0x9
+ 2468 0117 6A00     		.ascii	"j\000"
+ 2469 0119 01       		.byte	0x1
+ 2470 011a 28       		.byte	0x28
+ 2471 011b 68000000 		.4byte	0x68
+ 2472 011f 02       		.byte	0x2
+ 2473 0120 91       		.byte	0x91
+ 2474 0121 78       		.sleb128 -8
+ 2475 0122 00       		.byte	0
+ 2476 0123 0A       		.uleb128 0xa
+ 2477 0124 01       		.byte	0x1
+ 2478 0125 CA010000 		.4byte	.LASF16
+ 2479 0129 01       		.byte	0x1
+ 2480 012a 30       		.byte	0x30
+ 2481 012b 01       		.byte	0x1
+ 2482 012c 68000000 		.4byte	0x68
+ 2483 0130 78000000 		.4byte	.LFB4
+ 2484 0134 B4000000 		.4byte	.LFE4
+ 2485 0138 60000000 		.4byte	.LLST3
+ 2486 013c 01       		.byte	0x1
+ 2487 013d 7A010000 		.4byte	0x17a
+ 2488 0141 06       		.uleb128 0x6
+ 2489 0142 3E020000 		.4byte	.LASF17
+ 2490 0146 01       		.byte	0x1
+ARM GAS  /tmp/cciGZpl2.s 			page 52
+
+
+ 2491 0147 30       		.byte	0x30
+ 2492 0148 68000000 		.4byte	0x68
+ 2493 014c 02       		.byte	0x2
+ 2494 014d 91       		.byte	0x91
+ 2495 014e 6C       		.sleb128 -20
+ 2496 014f 06       		.uleb128 0x6
+ 2497 0150 28010000 		.4byte	.LASF18
+ 2498 0154 01       		.byte	0x1
+ 2499 0155 30       		.byte	0x30
+ 2500 0156 68000000 		.4byte	0x68
+ 2501 015a 02       		.byte	0x2
+ 2502 015b 91       		.byte	0x91
+ 2503 015c 68       		.sleb128 -24
+ 2504 015d 0B       		.uleb128 0xb
+ 2505 015e 98000000 		.4byte	.LASF11
+ 2506 0162 01       		.byte	0x1
+ 2507 0163 31       		.byte	0x31
+ 2508 0164 68000000 		.4byte	0x68
+ 2509 0168 02       		.byte	0x2
+ 2510 0169 91       		.byte	0x91
+ 2511 016a 74       		.sleb128 -12
+ 2512 016b 0B       		.uleb128 0xb
+ 2513 016c 17000000 		.4byte	.LASF19
+ 2514 0170 01       		.byte	0x1
+ 2515 0171 32       		.byte	0x32
+ 2516 0172 68000000 		.4byte	0x68
+ 2517 0176 02       		.byte	0x2
+ 2518 0177 91       		.byte	0x91
+ 2519 0178 70       		.sleb128 -16
+ 2520 0179 00       		.byte	0
+ 2521 017a 0A       		.uleb128 0xa
+ 2522 017b 01       		.byte	0x1
+ 2523 017c 9E000000 		.4byte	.LASF20
+ 2524 0180 01       		.byte	0x1
+ 2525 0181 3A       		.byte	0x3a
+ 2526 0182 01       		.byte	0x1
+ 2527 0183 68000000 		.4byte	0x68
+ 2528 0187 B4000000 		.4byte	.LFB5
+ 2529 018b 0C010000 		.4byte	.LFE5
+ 2530 018f 8C000000 		.4byte	.LLST4
+ 2531 0193 01       		.byte	0x1
+ 2532 0194 DF010000 		.4byte	0x1df
+ 2533 0198 06       		.uleb128 0x6
+ 2534 0199 E8020000 		.4byte	.LASF21
+ 2535 019d 01       		.byte	0x1
+ 2536 019e 3A       		.byte	0x3a
+ 2537 019f 68000000 		.4byte	0x68
+ 2538 01a3 02       		.byte	0x2
+ 2539 01a4 91       		.byte	0x91
+ 2540 01a5 64       		.sleb128 -28
+ 2541 01a6 0B       		.uleb128 0xb
+ 2542 01a7 98000000 		.4byte	.LASF11
+ 2543 01ab 01       		.byte	0x1
+ 2544 01ac 3B       		.byte	0x3b
+ 2545 01ad 68000000 		.4byte	0x68
+ 2546 01b1 02       		.byte	0x2
+ 2547 01b2 91       		.byte	0x91
+ARM GAS  /tmp/cciGZpl2.s 			page 53
+
+
+ 2548 01b3 6C       		.sleb128 -20
+ 2549 01b4 0B       		.uleb128 0xb
+ 2550 01b5 17000000 		.4byte	.LASF19
+ 2551 01b9 01       		.byte	0x1
+ 2552 01ba 3C       		.byte	0x3c
+ 2553 01bb 68000000 		.4byte	0x68
+ 2554 01bf 02       		.byte	0x2
+ 2555 01c0 91       		.byte	0x91
+ 2556 01c1 68       		.sleb128 -24
+ 2557 01c2 0B       		.uleb128 0xb
+ 2558 01c3 91000000 		.4byte	.LASF22
+ 2559 01c7 01       		.byte	0x1
+ 2560 01c8 3D       		.byte	0x3d
+ 2561 01c9 68000000 		.4byte	0x68
+ 2562 01cd 02       		.byte	0x2
+ 2563 01ce 91       		.byte	0x91
+ 2564 01cf 74       		.sleb128 -12
+ 2565 01d0 0B       		.uleb128 0xb
+ 2566 01d1 17030000 		.4byte	.LASF23
+ 2567 01d5 01       		.byte	0x1
+ 2568 01d6 3E       		.byte	0x3e
+ 2569 01d7 68000000 		.4byte	0x68
+ 2570 01db 02       		.byte	0x2
+ 2571 01dc 91       		.byte	0x91
+ 2572 01dd 70       		.sleb128 -16
+ 2573 01de 00       		.byte	0
+ 2574 01df 0C       		.uleb128 0xc
+ 2575 01e0 01       		.byte	0x1
+ 2576 01e1 72706D00 		.ascii	"rpm\000"
+ 2577 01e5 01       		.byte	0x1
+ 2578 01e6 48       		.byte	0x48
+ 2579 01e7 01       		.byte	0x1
+ 2580 01e8 68000000 		.4byte	0x68
+ 2581 01ec 0C010000 		.4byte	.LFB6
+ 2582 01f0 48010000 		.4byte	.LFE6
+ 2583 01f4 B8000000 		.4byte	.LLST5
+ 2584 01f8 01       		.byte	0x1
+ 2585 01f9 28020000 		.4byte	0x228
+ 2586 01fd 06       		.uleb128 0x6
+ 2587 01fe F8010000 		.4byte	.LASF24
+ 2588 0202 01       		.byte	0x1
+ 2589 0203 48       		.byte	0x48
+ 2590 0204 68000000 		.4byte	0x68
+ 2591 0208 02       		.byte	0x2
+ 2592 0209 91       		.byte	0x91
+ 2593 020a 6C       		.sleb128 -20
+ 2594 020b 0B       		.uleb128 0xb
+ 2595 020c 98000000 		.4byte	.LASF11
+ 2596 0210 01       		.byte	0x1
+ 2597 0211 49       		.byte	0x49
+ 2598 0212 68000000 		.4byte	0x68
+ 2599 0216 02       		.byte	0x2
+ 2600 0217 91       		.byte	0x91
+ 2601 0218 74       		.sleb128 -12
+ 2602 0219 0B       		.uleb128 0xb
+ 2603 021a 17000000 		.4byte	.LASF19
+ 2604 021e 01       		.byte	0x1
+ARM GAS  /tmp/cciGZpl2.s 			page 54
+
+
+ 2605 021f 4A       		.byte	0x4a
+ 2606 0220 68000000 		.4byte	0x68
+ 2607 0224 02       		.byte	0x2
+ 2608 0225 91       		.byte	0x91
+ 2609 0226 70       		.sleb128 -16
+ 2610 0227 00       		.byte	0
+ 2611 0228 0A       		.uleb128 0xa
+ 2612 0229 01       		.byte	0x1
+ 2613 022a 00000000 		.4byte	.LASF25
+ 2614 022e 01       		.byte	0x1
+ 2615 022f 57       		.byte	0x57
+ 2616 0230 01       		.byte	0x1
+ 2617 0231 68000000 		.4byte	0x68
+ 2618 0235 48010000 		.4byte	.LFB7
+ 2619 0239 D0010000 		.4byte	.LFE7
+ 2620 023d E4000000 		.4byte	.LLST6
+ 2621 0241 01       		.byte	0x1
+ 2622 0242 A9020000 		.4byte	0x2a9
+ 2623 0246 06       		.uleb128 0x6
+ 2624 0247 20030000 		.4byte	.LASF26
+ 2625 024b 01       		.byte	0x1
+ 2626 024c 57       		.byte	0x57
+ 2627 024d 68000000 		.4byte	0x68
+ 2628 0251 02       		.byte	0x2
+ 2629 0252 91       		.byte	0x91
+ 2630 0253 5C       		.sleb128 -36
+ 2631 0254 06       		.uleb128 0x6
+ 2632 0255 28010000 		.4byte	.LASF18
+ 2633 0259 01       		.byte	0x1
+ 2634 025a 57       		.byte	0x57
+ 2635 025b 68000000 		.4byte	0x68
+ 2636 025f 02       		.byte	0x2
+ 2637 0260 91       		.byte	0x91
+ 2638 0261 58       		.sleb128 -40
+ 2639 0262 0B       		.uleb128 0xb
+ 2640 0263 D3010000 		.4byte	.LASF27
+ 2641 0267 01       		.byte	0x1
+ 2642 0268 58       		.byte	0x58
+ 2643 0269 68000000 		.4byte	0x68
+ 2644 026d 02       		.byte	0x2
+ 2645 026e 91       		.byte	0x91
+ 2646 026f 74       		.sleb128 -12
+ 2647 0270 0B       		.uleb128 0xb
+ 2648 0271 0E010000 		.4byte	.LASF28
+ 2649 0275 01       		.byte	0x1
+ 2650 0276 58       		.byte	0x58
+ 2651 0277 68000000 		.4byte	0x68
+ 2652 027b 02       		.byte	0x2
+ 2653 027c 91       		.byte	0x91
+ 2654 027d 70       		.sleb128 -16
+ 2655 027e 0B       		.uleb128 0xb
+ 2656 027f 50010000 		.4byte	.LASF29
+ 2657 0283 01       		.byte	0x1
+ 2658 0284 58       		.byte	0x58
+ 2659 0285 68000000 		.4byte	0x68
+ 2660 0289 02       		.byte	0x2
+ 2661 028a 91       		.byte	0x91
+ARM GAS  /tmp/cciGZpl2.s 			page 55
+
+
+ 2662 028b 6C       		.sleb128 -20
+ 2663 028c 0B       		.uleb128 0xb
+ 2664 028d 98000000 		.4byte	.LASF11
+ 2665 0291 01       		.byte	0x1
+ 2666 0292 59       		.byte	0x59
+ 2667 0293 68000000 		.4byte	0x68
+ 2668 0297 02       		.byte	0x2
+ 2669 0298 91       		.byte	0x91
+ 2670 0299 68       		.sleb128 -24
+ 2671 029a 0B       		.uleb128 0xb
+ 2672 029b 17000000 		.4byte	.LASF19
+ 2673 029f 01       		.byte	0x1
+ 2674 02a0 59       		.byte	0x59
+ 2675 02a1 68000000 		.4byte	0x68
+ 2676 02a5 02       		.byte	0x2
+ 2677 02a6 91       		.byte	0x91
+ 2678 02a7 64       		.sleb128 -28
+ 2679 02a8 00       		.byte	0
+ 2680 02a9 0A       		.uleb128 0xa
+ 2681 02aa 01       		.byte	0x1
+ 2682 02ab 81000000 		.4byte	.LASF30
+ 2683 02af 01       		.byte	0x1
+ 2684 02b0 6B       		.byte	0x6b
+ 2685 02b1 01       		.byte	0x1
+ 2686 02b2 68000000 		.4byte	0x68
+ 2687 02b6 D0010000 		.4byte	.LFB8
+ 2688 02ba 940D0000 		.4byte	.LFE8
+ 2689 02be 10010000 		.4byte	.LLST7
+ 2690 02c2 01       		.byte	0x1
+ 2691 02c3 F5030000 		.4byte	0x3f5
+ 2692 02c7 0B       		.uleb128 0xb
+ 2693 02c8 28020000 		.4byte	.LASF31
+ 2694 02cc 01       		.byte	0x1
+ 2695 02cd 6C       		.byte	0x6c
+ 2696 02ce 68000000 		.4byte	0x68
+ 2697 02d2 02       		.byte	0x2
+ 2698 02d3 91       		.byte	0x91
+ 2699 02d4 40       		.sleb128 -64
+ 2700 02d5 0B       		.uleb128 0xb
+ 2701 02d6 47030000 		.4byte	.LASF32
+ 2702 02da 01       		.byte	0x1
+ 2703 02db 6C       		.byte	0x6c
+ 2704 02dc 68000000 		.4byte	0x68
+ 2705 02e0 03       		.byte	0x3
+ 2706 02e1 91       		.byte	0x91
+ 2707 02e2 BC7F     		.sleb128 -68
+ 2708 02e4 0B       		.uleb128 0xb
+ 2709 02e5 45000000 		.4byte	.LASF33
+ 2710 02e9 01       		.byte	0x1
+ 2711 02ea 6D       		.byte	0x6d
+ 2712 02eb 68000000 		.4byte	0x68
+ 2713 02ef 02       		.byte	0x2
+ 2714 02f0 91       		.byte	0x91
+ 2715 02f1 74       		.sleb128 -12
+ 2716 02f2 0B       		.uleb128 0xb
+ 2717 02f3 3C000000 		.4byte	.LASF34
+ 2718 02f7 01       		.byte	0x1
+ARM GAS  /tmp/cciGZpl2.s 			page 56
+
+
+ 2719 02f8 6E       		.byte	0x6e
+ 2720 02f9 68000000 		.4byte	0x68
+ 2721 02fd 02       		.byte	0x2
+ 2722 02fe 91       		.byte	0x91
+ 2723 02ff 70       		.sleb128 -16
+ 2724 0300 0B       		.uleb128 0xb
+ 2725 0301 D3020000 		.4byte	.LASF35
+ 2726 0305 01       		.byte	0x1
+ 2727 0306 6F       		.byte	0x6f
+ 2728 0307 68000000 		.4byte	0x68
+ 2729 030b 03       		.byte	0x3
+ 2730 030c 91       		.byte	0x91
+ 2731 030d B87F     		.sleb128 -72
+ 2732 030f 0B       		.uleb128 0xb
+ 2733 0310 28010000 		.4byte	.LASF18
+ 2734 0314 01       		.byte	0x1
+ 2735 0315 6F       		.byte	0x6f
+ 2736 0316 68000000 		.4byte	0x68
+ 2737 031a 02       		.byte	0x2
+ 2738 031b 91       		.byte	0x91
+ 2739 031c 6C       		.sleb128 -20
+ 2740 031d 0B       		.uleb128 0xb
+ 2741 031e FC020000 		.4byte	.LASF36
+ 2742 0322 01       		.byte	0x1
+ 2743 0323 6F       		.byte	0x6f
+ 2744 0324 68000000 		.4byte	0x68
+ 2745 0328 03       		.byte	0x3
+ 2746 0329 91       		.byte	0x91
+ 2747 032a B47F     		.sleb128 -76
+ 2748 032c 0B       		.uleb128 0xb
+ 2749 032d F8010000 		.4byte	.LASF24
+ 2750 0331 01       		.byte	0x1
+ 2751 0332 6F       		.byte	0x6f
+ 2752 0333 68000000 		.4byte	0x68
+ 2753 0337 03       		.byte	0x3
+ 2754 0338 91       		.byte	0x91
+ 2755 0339 B07F     		.sleb128 -80
+ 2756 033b 0B       		.uleb128 0xb
+ 2757 033c 20030000 		.4byte	.LASF26
+ 2758 0340 01       		.byte	0x1
+ 2759 0341 6F       		.byte	0x6f
+ 2760 0342 68000000 		.4byte	0x68
+ 2761 0346 03       		.byte	0x3
+ 2762 0347 91       		.byte	0x91
+ 2763 0348 AC7F     		.sleb128 -84
+ 2764 034a 0B       		.uleb128 0xb
+ 2765 034b 34020000 		.4byte	.LASF37
+ 2766 034f 01       		.byte	0x1
+ 2767 0350 6F       		.byte	0x6f
+ 2768 0351 68000000 		.4byte	0x68
+ 2769 0355 02       		.byte	0x2
+ 2770 0356 91       		.byte	0x91
+ 2771 0357 68       		.sleb128 -24
+ 2772 0358 0B       		.uleb128 0xb
+ 2773 0359 98010000 		.4byte	.LASF38
+ 2774 035d 01       		.byte	0x1
+ 2775 035e 6F       		.byte	0x6f
+ARM GAS  /tmp/cciGZpl2.s 			page 57
+
+
+ 2776 035f 68000000 		.4byte	0x68
+ 2777 0363 03       		.byte	0x3
+ 2778 0364 91       		.byte	0x91
+ 2779 0365 A87F     		.sleb128 -88
+ 2780 0367 09       		.uleb128 0x9
+ 2781 0368 62697400 		.ascii	"bit\000"
+ 2782 036c 01       		.byte	0x1
+ 2783 036d 70       		.byte	0x70
+ 2784 036e 68000000 		.4byte	0x68
+ 2785 0372 02       		.byte	0x2
+ 2786 0373 91       		.byte	0x91
+ 2787 0374 64       		.sleb128 -28
+ 2788 0375 0B       		.uleb128 0xb
+ 2789 0376 49020000 		.4byte	.LASF39
+ 2790 037a 01       		.byte	0x1
+ 2791 037b 71       		.byte	0x71
+ 2792 037c 68000000 		.4byte	0x68
+ 2793 0380 02       		.byte	0x2
+ 2794 0381 91       		.byte	0x91
+ 2795 0382 60       		.sleb128 -32
+ 2796 0383 0B       		.uleb128 0xb
+ 2797 0384 1D010000 		.4byte	.LASF40
+ 2798 0388 01       		.byte	0x1
+ 2799 0389 72       		.byte	0x72
+ 2800 038a 68000000 		.4byte	0x68
+ 2801 038e 02       		.byte	0x2
+ 2802 038f 91       		.byte	0x91
+ 2803 0390 5C       		.sleb128 -36
+ 2804 0391 0B       		.uleb128 0xb
+ 2805 0392 B0000000 		.4byte	.LASF41
+ 2806 0396 01       		.byte	0x1
+ 2807 0397 72       		.byte	0x72
+ 2808 0398 68000000 		.4byte	0x68
+ 2809 039c 02       		.byte	0x2
+ 2810 039d 91       		.byte	0x91
+ 2811 039e 58       		.sleb128 -40
+ 2812 039f 0B       		.uleb128 0xb
+ 2813 03a0 A6010000 		.4byte	.LASF42
+ 2814 03a4 01       		.byte	0x1
+ 2815 03a5 73       		.byte	0x73
+ 2816 03a6 68000000 		.4byte	0x68
+ 2817 03aa 02       		.byte	0x2
+ 2818 03ab 91       		.byte	0x91
+ 2819 03ac 54       		.sleb128 -44
+ 2820 03ad 0B       		.uleb128 0xb
+ 2821 03ae 02010000 		.4byte	.LASF43
+ 2822 03b2 01       		.byte	0x1
+ 2823 03b3 74       		.byte	0x74
+ 2824 03b4 68000000 		.4byte	0x68
+ 2825 03b8 02       		.byte	0x2
+ 2826 03b9 91       		.byte	0x91
+ 2827 03ba 50       		.sleb128 -48
+ 2828 03bb 0B       		.uleb128 0xb
+ 2829 03bc A4000000 		.4byte	.LASF44
+ 2830 03c0 01       		.byte	0x1
+ 2831 03c1 74       		.byte	0x74
+ 2832 03c2 68000000 		.4byte	0x68
+ARM GAS  /tmp/cciGZpl2.s 			page 58
+
+
+ 2833 03c6 02       		.byte	0x2
+ 2834 03c7 91       		.byte	0x91
+ 2835 03c8 4C       		.sleb128 -52
+ 2836 03c9 0B       		.uleb128 0xb
+ 2837 03ca 44010000 		.4byte	.LASF45
+ 2838 03ce 01       		.byte	0x1
+ 2839 03cf 74       		.byte	0x74
+ 2840 03d0 68000000 		.4byte	0x68
+ 2841 03d4 02       		.byte	0x2
+ 2842 03d5 91       		.byte	0x91
+ 2843 03d6 48       		.sleb128 -56
+ 2844 03d7 0B       		.uleb128 0xb
+ 2845 03d8 30000000 		.4byte	.LASF46
+ 2846 03dc 01       		.byte	0x1
+ 2847 03dd 74       		.byte	0x74
+ 2848 03de 68000000 		.4byte	0x68
+ 2849 03e2 02       		.byte	0x2
+ 2850 03e3 91       		.byte	0x91
+ 2851 03e4 44       		.sleb128 -60
+ 2852 03e5 0B       		.uleb128 0xb
+ 2853 03e6 C9000000 		.4byte	.LASF47
+ 2854 03ea 01       		.byte	0x1
+ 2855 03eb 75       		.byte	0x75
+ 2856 03ec 68000000 		.4byte	0x68
+ 2857 03f0 03       		.byte	0x3
+ 2858 03f1 91       		.byte	0x91
+ 2859 03f2 A47F     		.sleb128 -92
+ 2860 03f4 00       		.byte	0
+ 2861 03f5 0D       		.uleb128 0xd
+ 2862 03f6 20020000 		.4byte	.LASF48
+ 2863 03fa 01       		.byte	0x1
+ 2864 03fb 12       		.byte	0x12
+ 2865 03fc 07040000 		.4byte	0x407
+ 2866 0400 01       		.byte	0x1
+ 2867 0401 05       		.byte	0x5
+ 2868 0402 03       		.byte	0x3
+ 2869 0403 00000000 		.4byte	SW_REGS
+ 2870 0407 0E       		.uleb128 0xe
+ 2871 0408 04       		.byte	0x4
+ 2872 0409 0D040000 		.4byte	0x40d
+ 2873 040d 0F       		.uleb128 0xf
+ 2874 040e 76000000 		.4byte	0x76
+ 2875 0412 0D       		.uleb128 0xd
+ 2876 0413 DD010000 		.4byte	.LASF49
+ 2877 0417 01       		.byte	0x1
+ 2878 0418 13       		.byte	0x13
+ 2879 0419 07040000 		.4byte	0x407
+ 2880 041d 01       		.byte	0x1
+ 2881 041e 05       		.byte	0x5
+ 2882 041f 03       		.byte	0x3
+ 2883 0420 00000000 		.4byte	OUT_REGS
+ 2884 0424 00       		.byte	0
+ 2885              		.section	.debug_abbrev,"",%progbits
+ 2886              	.Ldebug_abbrev0:
+ 2887 0000 01       		.uleb128 0x1
+ 2888 0001 11       		.uleb128 0x11
+ 2889 0002 01       		.byte	0x1
+ARM GAS  /tmp/cciGZpl2.s 			page 59
+
+
+ 2890 0003 25       		.uleb128 0x25
+ 2891 0004 0E       		.uleb128 0xe
+ 2892 0005 13       		.uleb128 0x13
+ 2893 0006 0B       		.uleb128 0xb
+ 2894 0007 03       		.uleb128 0x3
+ 2895 0008 0E       		.uleb128 0xe
+ 2896 0009 1B       		.uleb128 0x1b
+ 2897 000a 0E       		.uleb128 0xe
+ 2898 000b 11       		.uleb128 0x11
+ 2899 000c 01       		.uleb128 0x1
+ 2900 000d 12       		.uleb128 0x12
+ 2901 000e 01       		.uleb128 0x1
+ 2902 000f 10       		.uleb128 0x10
+ 2903 0010 06       		.uleb128 0x6
+ 2904 0011 00       		.byte	0
+ 2905 0012 00       		.byte	0
+ 2906 0013 02       		.uleb128 0x2
+ 2907 0014 24       		.uleb128 0x24
+ 2908 0015 00       		.byte	0
+ 2909 0016 0B       		.uleb128 0xb
+ 2910 0017 0B       		.uleb128 0xb
+ 2911 0018 3E       		.uleb128 0x3e
+ 2912 0019 0B       		.uleb128 0xb
+ 2913 001a 03       		.uleb128 0x3
+ 2914 001b 0E       		.uleb128 0xe
+ 2915 001c 00       		.byte	0
+ 2916 001d 00       		.byte	0
+ 2917 001e 03       		.uleb128 0x3
+ 2918 001f 16       		.uleb128 0x16
+ 2919 0020 00       		.byte	0
+ 2920 0021 03       		.uleb128 0x3
+ 2921 0022 0E       		.uleb128 0xe
+ 2922 0023 3A       		.uleb128 0x3a
+ 2923 0024 0B       		.uleb128 0xb
+ 2924 0025 3B       		.uleb128 0x3b
+ 2925 0026 0B       		.uleb128 0xb
+ 2926 0027 49       		.uleb128 0x49
+ 2927 0028 13       		.uleb128 0x13
+ 2928 0029 00       		.byte	0
+ 2929 002a 00       		.byte	0
+ 2930 002b 04       		.uleb128 0x4
+ 2931 002c 24       		.uleb128 0x24
+ 2932 002d 00       		.byte	0
+ 2933 002e 0B       		.uleb128 0xb
+ 2934 002f 0B       		.uleb128 0xb
+ 2935 0030 3E       		.uleb128 0x3e
+ 2936 0031 0B       		.uleb128 0xb
+ 2937 0032 03       		.uleb128 0x3
+ 2938 0033 08       		.uleb128 0x8
+ 2939 0034 00       		.byte	0
+ 2940 0035 00       		.byte	0
+ 2941 0036 05       		.uleb128 0x5
+ 2942 0037 2E       		.uleb128 0x2e
+ 2943 0038 01       		.byte	0x1
+ 2944 0039 3F       		.uleb128 0x3f
+ 2945 003a 0C       		.uleb128 0xc
+ 2946 003b 03       		.uleb128 0x3
+ARM GAS  /tmp/cciGZpl2.s 			page 60
+
+
+ 2947 003c 0E       		.uleb128 0xe
+ 2948 003d 3A       		.uleb128 0x3a
+ 2949 003e 0B       		.uleb128 0xb
+ 2950 003f 3B       		.uleb128 0x3b
+ 2951 0040 0B       		.uleb128 0xb
+ 2952 0041 27       		.uleb128 0x27
+ 2953 0042 0C       		.uleb128 0xc
+ 2954 0043 11       		.uleb128 0x11
+ 2955 0044 01       		.uleb128 0x1
+ 2956 0045 12       		.uleb128 0x12
+ 2957 0046 01       		.uleb128 0x1
+ 2958 0047 40       		.uleb128 0x40
+ 2959 0048 06       		.uleb128 0x6
+ 2960 0049 9742     		.uleb128 0x2117
+ 2961 004b 0C       		.uleb128 0xc
+ 2962 004c 01       		.uleb128 0x1
+ 2963 004d 13       		.uleb128 0x13
+ 2964 004e 00       		.byte	0
+ 2965 004f 00       		.byte	0
+ 2966 0050 06       		.uleb128 0x6
+ 2967 0051 05       		.uleb128 0x5
+ 2968 0052 00       		.byte	0
+ 2969 0053 03       		.uleb128 0x3
+ 2970 0054 0E       		.uleb128 0xe
+ 2971 0055 3A       		.uleb128 0x3a
+ 2972 0056 0B       		.uleb128 0xb
+ 2973 0057 3B       		.uleb128 0x3b
+ 2974 0058 0B       		.uleb128 0xb
+ 2975 0059 49       		.uleb128 0x49
+ 2976 005a 13       		.uleb128 0x13
+ 2977 005b 02       		.uleb128 0x2
+ 2978 005c 0A       		.uleb128 0xa
+ 2979 005d 00       		.byte	0
+ 2980 005e 00       		.byte	0
+ 2981 005f 07       		.uleb128 0x7
+ 2982 0060 2E       		.uleb128 0x2e
+ 2983 0061 00       		.byte	0
+ 2984 0062 3F       		.uleb128 0x3f
+ 2985 0063 0C       		.uleb128 0xc
+ 2986 0064 03       		.uleb128 0x3
+ 2987 0065 0E       		.uleb128 0xe
+ 2988 0066 3A       		.uleb128 0x3a
+ 2989 0067 0B       		.uleb128 0xb
+ 2990 0068 3B       		.uleb128 0x3b
+ 2991 0069 0B       		.uleb128 0xb
+ 2992 006a 27       		.uleb128 0x27
+ 2993 006b 0C       		.uleb128 0xc
+ 2994 006c 49       		.uleb128 0x49
+ 2995 006d 13       		.uleb128 0x13
+ 2996 006e 11       		.uleb128 0x11
+ 2997 006f 01       		.uleb128 0x1
+ 2998 0070 12       		.uleb128 0x12
+ 2999 0071 01       		.uleb128 0x1
+ 3000 0072 40       		.uleb128 0x40
+ 3001 0073 0A       		.uleb128 0xa
+ 3002 0074 9742     		.uleb128 0x2117
+ 3003 0076 0C       		.uleb128 0xc
+ARM GAS  /tmp/cciGZpl2.s 			page 61
+
+
+ 3004 0077 00       		.byte	0
+ 3005 0078 00       		.byte	0
+ 3006 0079 08       		.uleb128 0x8
+ 3007 007a 2E       		.uleb128 0x2e
+ 3008 007b 01       		.byte	0x1
+ 3009 007c 3F       		.uleb128 0x3f
+ 3010 007d 0C       		.uleb128 0xc
+ 3011 007e 03       		.uleb128 0x3
+ 3012 007f 0E       		.uleb128 0xe
+ 3013 0080 3A       		.uleb128 0x3a
+ 3014 0081 0B       		.uleb128 0xb
+ 3015 0082 3B       		.uleb128 0x3b
+ 3016 0083 0B       		.uleb128 0xb
+ 3017 0084 27       		.uleb128 0x27
+ 3018 0085 0C       		.uleb128 0xc
+ 3019 0086 49       		.uleb128 0x49
+ 3020 0087 13       		.uleb128 0x13
+ 3021 0088 11       		.uleb128 0x11
+ 3022 0089 01       		.uleb128 0x1
+ 3023 008a 12       		.uleb128 0x12
+ 3024 008b 01       		.uleb128 0x1
+ 3025 008c 40       		.uleb128 0x40
+ 3026 008d 06       		.uleb128 0x6
+ 3027 008e 9742     		.uleb128 0x2117
+ 3028 0090 0C       		.uleb128 0xc
+ 3029 0091 01       		.uleb128 0x1
+ 3030 0092 13       		.uleb128 0x13
+ 3031 0093 00       		.byte	0
+ 3032 0094 00       		.byte	0
+ 3033 0095 09       		.uleb128 0x9
+ 3034 0096 34       		.uleb128 0x34
+ 3035 0097 00       		.byte	0
+ 3036 0098 03       		.uleb128 0x3
+ 3037 0099 08       		.uleb128 0x8
+ 3038 009a 3A       		.uleb128 0x3a
+ 3039 009b 0B       		.uleb128 0xb
+ 3040 009c 3B       		.uleb128 0x3b
+ 3041 009d 0B       		.uleb128 0xb
+ 3042 009e 49       		.uleb128 0x49
+ 3043 009f 13       		.uleb128 0x13
+ 3044 00a0 02       		.uleb128 0x2
+ 3045 00a1 0A       		.uleb128 0xa
+ 3046 00a2 00       		.byte	0
+ 3047 00a3 00       		.byte	0
+ 3048 00a4 0A       		.uleb128 0xa
+ 3049 00a5 2E       		.uleb128 0x2e
+ 3050 00a6 01       		.byte	0x1
+ 3051 00a7 3F       		.uleb128 0x3f
+ 3052 00a8 0C       		.uleb128 0xc
+ 3053 00a9 03       		.uleb128 0x3
+ 3054 00aa 0E       		.uleb128 0xe
+ 3055 00ab 3A       		.uleb128 0x3a
+ 3056 00ac 0B       		.uleb128 0xb
+ 3057 00ad 3B       		.uleb128 0x3b
+ 3058 00ae 0B       		.uleb128 0xb
+ 3059 00af 27       		.uleb128 0x27
+ 3060 00b0 0C       		.uleb128 0xc
+ARM GAS  /tmp/cciGZpl2.s 			page 62
+
+
+ 3061 00b1 49       		.uleb128 0x49
+ 3062 00b2 13       		.uleb128 0x13
+ 3063 00b3 11       		.uleb128 0x11
+ 3064 00b4 01       		.uleb128 0x1
+ 3065 00b5 12       		.uleb128 0x12
+ 3066 00b6 01       		.uleb128 0x1
+ 3067 00b7 40       		.uleb128 0x40
+ 3068 00b8 06       		.uleb128 0x6
+ 3069 00b9 9642     		.uleb128 0x2116
+ 3070 00bb 0C       		.uleb128 0xc
+ 3071 00bc 01       		.uleb128 0x1
+ 3072 00bd 13       		.uleb128 0x13
+ 3073 00be 00       		.byte	0
+ 3074 00bf 00       		.byte	0
+ 3075 00c0 0B       		.uleb128 0xb
+ 3076 00c1 34       		.uleb128 0x34
+ 3077 00c2 00       		.byte	0
+ 3078 00c3 03       		.uleb128 0x3
+ 3079 00c4 0E       		.uleb128 0xe
+ 3080 00c5 3A       		.uleb128 0x3a
+ 3081 00c6 0B       		.uleb128 0xb
+ 3082 00c7 3B       		.uleb128 0x3b
+ 3083 00c8 0B       		.uleb128 0xb
+ 3084 00c9 49       		.uleb128 0x49
+ 3085 00ca 13       		.uleb128 0x13
+ 3086 00cb 02       		.uleb128 0x2
+ 3087 00cc 0A       		.uleb128 0xa
+ 3088 00cd 00       		.byte	0
+ 3089 00ce 00       		.byte	0
+ 3090 00cf 0C       		.uleb128 0xc
+ 3091 00d0 2E       		.uleb128 0x2e
+ 3092 00d1 01       		.byte	0x1
+ 3093 00d2 3F       		.uleb128 0x3f
+ 3094 00d3 0C       		.uleb128 0xc
+ 3095 00d4 03       		.uleb128 0x3
+ 3096 00d5 08       		.uleb128 0x8
+ 3097 00d6 3A       		.uleb128 0x3a
+ 3098 00d7 0B       		.uleb128 0xb
+ 3099 00d8 3B       		.uleb128 0x3b
+ 3100 00d9 0B       		.uleb128 0xb
+ 3101 00da 27       		.uleb128 0x27
+ 3102 00db 0C       		.uleb128 0xc
+ 3103 00dc 49       		.uleb128 0x49
+ 3104 00dd 13       		.uleb128 0x13
+ 3105 00de 11       		.uleb128 0x11
+ 3106 00df 01       		.uleb128 0x1
+ 3107 00e0 12       		.uleb128 0x12
+ 3108 00e1 01       		.uleb128 0x1
+ 3109 00e2 40       		.uleb128 0x40
+ 3110 00e3 06       		.uleb128 0x6
+ 3111 00e4 9642     		.uleb128 0x2116
+ 3112 00e6 0C       		.uleb128 0xc
+ 3113 00e7 01       		.uleb128 0x1
+ 3114 00e8 13       		.uleb128 0x13
+ 3115 00e9 00       		.byte	0
+ 3116 00ea 00       		.byte	0
+ 3117 00eb 0D       		.uleb128 0xd
+ARM GAS  /tmp/cciGZpl2.s 			page 63
+
+
+ 3118 00ec 34       		.uleb128 0x34
+ 3119 00ed 00       		.byte	0
+ 3120 00ee 03       		.uleb128 0x3
+ 3121 00ef 0E       		.uleb128 0xe
+ 3122 00f0 3A       		.uleb128 0x3a
+ 3123 00f1 0B       		.uleb128 0xb
+ 3124 00f2 3B       		.uleb128 0x3b
+ 3125 00f3 0B       		.uleb128 0xb
+ 3126 00f4 49       		.uleb128 0x49
+ 3127 00f5 13       		.uleb128 0x13
+ 3128 00f6 3F       		.uleb128 0x3f
+ 3129 00f7 0C       		.uleb128 0xc
+ 3130 00f8 02       		.uleb128 0x2
+ 3131 00f9 0A       		.uleb128 0xa
+ 3132 00fa 00       		.byte	0
+ 3133 00fb 00       		.byte	0
+ 3134 00fc 0E       		.uleb128 0xe
+ 3135 00fd 0F       		.uleb128 0xf
+ 3136 00fe 00       		.byte	0
+ 3137 00ff 0B       		.uleb128 0xb
+ 3138 0100 0B       		.uleb128 0xb
+ 3139 0101 49       		.uleb128 0x49
+ 3140 0102 13       		.uleb128 0x13
+ 3141 0103 00       		.byte	0
+ 3142 0104 00       		.byte	0
+ 3143 0105 0F       		.uleb128 0xf
+ 3144 0106 35       		.uleb128 0x35
+ 3145 0107 00       		.byte	0
+ 3146 0108 49       		.uleb128 0x49
+ 3147 0109 13       		.uleb128 0x13
+ 3148 010a 00       		.byte	0
+ 3149 010b 00       		.byte	0
+ 3150 010c 00       		.byte	0
+ 3151              		.section	.debug_loc,"",%progbits
+ 3152              	.Ldebug_loc0:
+ 3153              	.LLST0:
+ 3154 0000 00000000 		.4byte	.LFB0-.Ltext0
+ 3155 0004 02000000 		.4byte	.LCFI0-.Ltext0
+ 3156 0008 0200     		.2byte	0x2
+ 3157 000a 7D       		.byte	0x7d
+ 3158 000b 00       		.sleb128 0
+ 3159 000c 02000000 		.4byte	.LCFI0-.Ltext0
+ 3160 0010 20000000 		.4byte	.LFE0-.Ltext0
+ 3161 0014 0200     		.2byte	0x2
+ 3162 0016 7D       		.byte	0x7d
+ 3163 0017 08       		.sleb128 8
+ 3164 0018 00000000 		.4byte	0
+ 3165 001c 00000000 		.4byte	0
+ 3166              	.LLST1:
+ 3167 0020 30000000 		.4byte	.LFB2-.Ltext0
+ 3168 0024 32000000 		.4byte	.LCFI1-.Ltext0
+ 3169 0028 0200     		.2byte	0x2
+ 3170 002a 7D       		.byte	0x7d
+ 3171 002b 00       		.sleb128 0
+ 3172 002c 32000000 		.4byte	.LCFI1-.Ltext0
+ 3173 0030 4C000000 		.4byte	.LFE2-.Ltext0
+ 3174 0034 0200     		.2byte	0x2
+ARM GAS  /tmp/cciGZpl2.s 			page 64
+
+
+ 3175 0036 7D       		.byte	0x7d
+ 3176 0037 08       		.sleb128 8
+ 3177 0038 00000000 		.4byte	0
+ 3178 003c 00000000 		.4byte	0
+ 3179              	.LLST2:
+ 3180 0040 4C000000 		.4byte	.LFB3-.Ltext0
+ 3181 0044 4E000000 		.4byte	.LCFI2-.Ltext0
+ 3182 0048 0200     		.2byte	0x2
+ 3183 004a 7D       		.byte	0x7d
+ 3184 004b 00       		.sleb128 0
+ 3185 004c 4E000000 		.4byte	.LCFI2-.Ltext0
+ 3186 0050 78000000 		.4byte	.LFE3-.Ltext0
+ 3187 0054 0200     		.2byte	0x2
+ 3188 0056 7D       		.byte	0x7d
+ 3189 0057 08       		.sleb128 8
+ 3190 0058 00000000 		.4byte	0
+ 3191 005c 00000000 		.4byte	0
+ 3192              	.LLST3:
+ 3193 0060 78000000 		.4byte	.LFB4-.Ltext0
+ 3194 0064 7A000000 		.4byte	.LCFI3-.Ltext0
+ 3195 0068 0200     		.2byte	0x2
+ 3196 006a 7D       		.byte	0x7d
+ 3197 006b 00       		.sleb128 0
+ 3198 006c 7A000000 		.4byte	.LCFI3-.Ltext0
+ 3199 0070 7C000000 		.4byte	.LCFI4-.Ltext0
+ 3200 0074 0200     		.2byte	0x2
+ 3201 0076 7D       		.byte	0x7d
+ 3202 0077 04       		.sleb128 4
+ 3203 0078 7C000000 		.4byte	.LCFI4-.Ltext0
+ 3204 007c B4000000 		.4byte	.LFE4-.Ltext0
+ 3205 0080 0200     		.2byte	0x2
+ 3206 0082 7D       		.byte	0x7d
+ 3207 0083 18       		.sleb128 24
+ 3208 0084 00000000 		.4byte	0
+ 3209 0088 00000000 		.4byte	0
+ 3210              	.LLST4:
+ 3211 008c B4000000 		.4byte	.LFB5-.Ltext0
+ 3212 0090 B6000000 		.4byte	.LCFI5-.Ltext0
+ 3213 0094 0200     		.2byte	0x2
+ 3214 0096 7D       		.byte	0x7d
+ 3215 0097 00       		.sleb128 0
+ 3216 0098 B6000000 		.4byte	.LCFI5-.Ltext0
+ 3217 009c B8000000 		.4byte	.LCFI6-.Ltext0
+ 3218 00a0 0200     		.2byte	0x2
+ 3219 00a2 7D       		.byte	0x7d
+ 3220 00a3 04       		.sleb128 4
+ 3221 00a4 B8000000 		.4byte	.LCFI6-.Ltext0
+ 3222 00a8 0C010000 		.4byte	.LFE5-.Ltext0
+ 3223 00ac 0200     		.2byte	0x2
+ 3224 00ae 7D       		.byte	0x7d
+ 3225 00af 20       		.sleb128 32
+ 3226 00b0 00000000 		.4byte	0
+ 3227 00b4 00000000 		.4byte	0
+ 3228              	.LLST5:
+ 3229 00b8 0C010000 		.4byte	.LFB6-.Ltext0
+ 3230 00bc 0E010000 		.4byte	.LCFI7-.Ltext0
+ 3231 00c0 0200     		.2byte	0x2
+ARM GAS  /tmp/cciGZpl2.s 			page 65
+
+
+ 3232 00c2 7D       		.byte	0x7d
+ 3233 00c3 00       		.sleb128 0
+ 3234 00c4 0E010000 		.4byte	.LCFI7-.Ltext0
+ 3235 00c8 10010000 		.4byte	.LCFI8-.Ltext0
+ 3236 00cc 0200     		.2byte	0x2
+ 3237 00ce 7D       		.byte	0x7d
+ 3238 00cf 04       		.sleb128 4
+ 3239 00d0 10010000 		.4byte	.LCFI8-.Ltext0
+ 3240 00d4 48010000 		.4byte	.LFE6-.Ltext0
+ 3241 00d8 0200     		.2byte	0x2
+ 3242 00da 7D       		.byte	0x7d
+ 3243 00db 18       		.sleb128 24
+ 3244 00dc 00000000 		.4byte	0
+ 3245 00e0 00000000 		.4byte	0
+ 3246              	.LLST6:
+ 3247 00e4 48010000 		.4byte	.LFB7-.Ltext0
+ 3248 00e8 4A010000 		.4byte	.LCFI9-.Ltext0
+ 3249 00ec 0200     		.2byte	0x2
+ 3250 00ee 7D       		.byte	0x7d
+ 3251 00ef 00       		.sleb128 0
+ 3252 00f0 4A010000 		.4byte	.LCFI9-.Ltext0
+ 3253 00f4 4C010000 		.4byte	.LCFI10-.Ltext0
+ 3254 00f8 0200     		.2byte	0x2
+ 3255 00fa 7D       		.byte	0x7d
+ 3256 00fb 04       		.sleb128 4
+ 3257 00fc 4C010000 		.4byte	.LCFI10-.Ltext0
+ 3258 0100 D0010000 		.4byte	.LFE7-.Ltext0
+ 3259 0104 0200     		.2byte	0x2
+ 3260 0106 7D       		.byte	0x7d
+ 3261 0107 28       		.sleb128 40
+ 3262 0108 00000000 		.4byte	0
+ 3263 010c 00000000 		.4byte	0
+ 3264              	.LLST7:
+ 3265 0110 D0010000 		.4byte	.LFB8-.Ltext0
+ 3266 0114 D2010000 		.4byte	.LCFI11-.Ltext0
+ 3267 0118 0200     		.2byte	0x2
+ 3268 011a 7D       		.byte	0x7d
+ 3269 011b 00       		.sleb128 0
+ 3270 011c D2010000 		.4byte	.LCFI11-.Ltext0
+ 3271 0120 D4010000 		.4byte	.LCFI12-.Ltext0
+ 3272 0124 0200     		.2byte	0x2
+ 3273 0126 7D       		.byte	0x7d
+ 3274 0127 08       		.sleb128 8
+ 3275 0128 D4010000 		.4byte	.LCFI12-.Ltext0
+ 3276 012c 940D0000 		.4byte	.LFE8-.Ltext0
+ 3277 0130 0300     		.2byte	0x3
+ 3278 0132 7D       		.byte	0x7d
+ 3279 0133 E000     		.sleb128 96
+ 3280 0135 00000000 		.4byte	0
+ 3281 0139 00000000 		.4byte	0
+ 3282              		.section	.debug_aranges,"",%progbits
+ 3283 0000 1C000000 		.4byte	0x1c
+ 3284 0004 0200     		.2byte	0x2
+ 3285 0006 00000000 		.4byte	.Ldebug_info0
+ 3286 000a 04       		.byte	0x4
+ 3287 000b 00       		.byte	0
+ 3288 000c 0000     		.2byte	0
+ARM GAS  /tmp/cciGZpl2.s 			page 66
+
+
+ 3289 000e 0000     		.2byte	0
+ 3290 0010 00000000 		.4byte	.Ltext0
+ 3291 0014 940D0000 		.4byte	.Letext0-.Ltext0
+ 3292 0018 00000000 		.4byte	0
+ 3293 001c 00000000 		.4byte	0
+ 3294              		.section	.debug_line,"",%progbits
+ 3295              	.Ldebug_line0:
+ 3296 0000 88020000 		.section	.debug_str,"MS",%progbits,1
+ 3296      0200BF00 
+ 3296      00000201 
+ 3296      FB0E0D00 
+ 3296      01010101 
+ 3297              	.LASF25:
+ 3298 0000 63757272 		.ascii	"current_speed_function\000"
+ 3298      656E745F 
+ 3298      73706565 
+ 3298      645F6675 
+ 3298      6E637469 
+ 3299              	.LASF19:
+ 3300 0017 72657375 		.ascii	"result\000"
+ 3300      6C7400
+ 3301              	.LASF14:
+ 3302 001e 64656C61 		.ascii	"delay_1s\000"
+ 3302      795F3173 
+ 3302      00
+ 3303              	.LASF53:
+ 3304 0027 72656164 		.ascii	"read_out\000"
+ 3304      5F6F7574 
+ 3304      00
+ 3305              	.LASF46:
+ 3306 0030 6269745F 		.ascii	"bit_3_digit\000"
+ 3306      335F6469 
+ 3306      67697400 
+ 3307              	.LASF34:
+ 3308 003c 7072696F 		.ascii	"priority\000"
+ 3308      72697479 
+ 3308      00
+ 3309              	.LASF33:
+ 3310 0045 73746174 		.ascii	"state\000"
+ 3310      6500
+ 3311              	.LASF2:
+ 3312 004b 73686F72 		.ascii	"short int\000"
+ 3312      7420696E 
+ 3312      7400
+ 3313              	.LASF13:
+ 3314 0055 77726974 		.ascii	"write_out\000"
+ 3314      655F6F75 
+ 3314      7400
+ 3315              	.LASF52:
+ 3316 005f 2F686F6D 		.ascii	"/home/yh4a19/design/chip/software\000"
+ 3316      652F7968 
+ 3316      34613139 
+ 3316      2F646573 
+ 3316      69676E2F 
+ 3317              	.LASF30:
+ 3318 0081 6D61696E 		.ascii	"main\000"
+ 3318      00
+ARM GAS  /tmp/cciGZpl2.s 			page 67
+
+
+ 3319              	.LASF9:
+ 3320 0086 5F5F7569 		.ascii	"__uint32_t\000"
+ 3320      6E743332 
+ 3320      5F7400
+ 3321              	.LASF22:
+ 3322 0091 74696D65 		.ascii	"time_h\000"
+ 3322      5F6800
+ 3323              	.LASF11:
+ 3324 0098 76616C75 		.ascii	"value\000"
+ 3324      6500
+ 3325              	.LASF20:
+ 3326 009e 74696D65 		.ascii	"timer\000"
+ 3326      7200
+ 3327              	.LASF44:
+ 3328 00a4 6269745F 		.ascii	"bit_1_digit\000"
+ 3328      315F6469 
+ 3328      67697400 
+ 3329              	.LASF41:
+ 3330 00b0 70726573 		.ascii	"press_trip\000"
+ 3330      735F7472 
+ 3330      697000
+ 3331              	.LASF15:
+ 3332 00bb 72656164 		.ascii	"read_switches\000"
+ 3332      5F737769 
+ 3332      74636865 
+ 3332      7300
+ 3333              	.LASF47:
+ 3334 00c9 73706565 		.ascii	"speed_of_current\000"
+ 3334      645F6F66 
+ 3334      5F637572 
+ 3334      72656E74 
+ 3334      00
+ 3335              	.LASF6:
+ 3336 00da 6C6F6E67 		.ascii	"long long int\000"
+ 3336      206C6F6E 
+ 3336      6720696E 
+ 3336      7400
+ 3337              	.LASF4:
+ 3338 00e8 6C6F6E67 		.ascii	"long int\000"
+ 3338      20696E74 
+ 3338      00
+ 3339              	.LASF12:
+ 3340 00f1 61646472 		.ascii	"addr\000"
+ 3340      00
+ 3341              	.LASF51:
+ 3342 00f6 636F6465 		.ascii	"code/main.c\000"
+ 3342      2F6D6169 
+ 3342      6E2E6300 
+ 3343              	.LASF43:
+ 3344 0102 6269745F 		.ascii	"bit_0_digit\000"
+ 3344      305F6469 
+ 3344      67697400 
+ 3345              	.LASF28:
+ 3346 010e 73706565 		.ascii	"speed_fraction\000"
+ 3346      645F6672 
+ 3346      61637469 
+ 3346      6F6E00
+ARM GAS  /tmp/cciGZpl2.s 			page 68
+
+
+ 3347              	.LASF40:
+ 3348 011d 70726573 		.ascii	"press_mode\000"
+ 3348      735F6D6F 
+ 3348      646500
+ 3349              	.LASF18:
+ 3350 0128 63697263 		.ascii	"circumference\000"
+ 3350      756D6665 
+ 3350      72656E63 
+ 3350      6500
+ 3351              	.LASF1:
+ 3352 0136 756E7369 		.ascii	"unsigned char\000"
+ 3352      676E6564 
+ 3352      20636861 
+ 3352      7200
+ 3353              	.LASF45:
+ 3354 0144 6269745F 		.ascii	"bit_2_digit\000"
+ 3354      325F6469 
+ 3354      67697400 
+ 3355              	.LASF29:
+ 3356 0150 6379636C 		.ascii	"cycle_per_hour\000"
+ 3356      655F7065 
+ 3356      725F686F 
+ 3356      757200
+ 3357              	.LASF0:
+ 3358 015f 7369676E 		.ascii	"signed char\000"
+ 3358      65642063 
+ 3358      68617200 
+ 3359              	.LASF7:
+ 3360 016b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3360      206C6F6E 
+ 3360      6720756E 
+ 3360      7369676E 
+ 3360      65642069 
+ 3361              	.LASF10:
+ 3362 0182 75696E74 		.ascii	"uint32_t\000"
+ 3362      33325F74 
+ 3362      00
+ 3363              	.LASF8:
+ 3364 018b 756E7369 		.ascii	"unsigned int\000"
+ 3364      676E6564 
+ 3364      20696E74 
+ 3364      00
+ 3365              	.LASF38:
+ 3366 0198 63757272 		.ascii	"current_speed\000"
+ 3366      656E745F 
+ 3366      73706565 
+ 3366      6400
+ 3367              	.LASF42:
+ 3368 01a6 70726573 		.ascii	"press_two_button\000"
+ 3368      735F7477 
+ 3368      6F5F6275 
+ 3368      74746F6E 
+ 3368      00
+ 3369              	.LASF3:
+ 3370 01b7 73686F72 		.ascii	"short unsigned int\000"
+ 3370      7420756E 
+ 3370      7369676E 
+ARM GAS  /tmp/cciGZpl2.s 			page 69
+
+
+ 3370      65642069 
+ 3370      6E7400
+ 3371              	.LASF16:
+ 3372 01ca 64697374 		.ascii	"distance\000"
+ 3372      616E6365 
+ 3372      00
+ 3373              	.LASF27:
+ 3374 01d3 73706565 		.ascii	"speed_int\000"
+ 3374      645F696E 
+ 3374      7400
+ 3375              	.LASF49:
+ 3376 01dd 4F55545F 		.ascii	"OUT_REGS\000"
+ 3376      52454753 
+ 3376      00
+ 3377              	.LASF5:
+ 3378 01e6 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3378      20756E73 
+ 3378      69676E65 
+ 3378      6420696E 
+ 3378      7400
+ 3379              	.LASF24:
+ 3380 01f8 73776974 		.ascii	"switch_count_of_time_per_cycle_of_crank\000"
+ 3380      63685F63 
+ 3380      6F756E74 
+ 3380      5F6F665F 
+ 3380      74696D65 
+ 3381              	.LASF48:
+ 3382 0220 53575F52 		.ascii	"SW_REGS\000"
+ 3382      45475300 
+ 3383              	.LASF31:
+ 3384 0228 62757474 		.ascii	"button_trip\000"
+ 3384      6F6E5F74 
+ 3384      72697000 
+ 3385              	.LASF37:
+ 3386 0234 6D61785F 		.ascii	"max_speed\000"
+ 3386      73706565 
+ 3386      6400
+ 3387              	.LASF17:
+ 3388 023e 636F756E 		.ascii	"count_fork\000"
+ 3388      745F666F 
+ 3388      726B00
+ 3389              	.LASF39:
+ 3390 0249 64696769 		.ascii	"digit\000"
+ 3390      7400
+ 3391              	.LASF50:
+ 3392 024f 474E5520 		.ascii	"GNU C11 5.4.1 20160919 (release) [ARM/embedded-5-br"
+ 3392      43313120 
+ 3392      352E342E 
+ 3392      31203230 
+ 3392      31363039 
+ 3393 0282 616E6368 		.ascii	"anch revision 240496] -mcpu=cortex-m0 -mthumb -gdwa"
+ 3393      20726576 
+ 3393      6973696F 
+ 3393      6E203234 
+ 3393      30343936 
+ 3394 02b5 72662D32 		.ascii	"rf-2 -O0 -fomit-frame-pointer\000"
+ 3394      202D4F30 
+ARM GAS  /tmp/cciGZpl2.s 			page 70
+
+
+ 3394      202D666F 
+ 3394      6D69742D 
+ 3394      6672616D 
+ 3395              	.LASF35:
+ 3396 02d3 73776974 		.ascii	"switch_count_of_fork\000"
+ 3396      63685F63 
+ 3396      6F756E74 
+ 3396      5F6F665F 
+ 3396      666F726B 
+ 3397              	.LASF21:
+ 3398 02e8 636F756E 		.ascii	"count_of_total_time\000"
+ 3398      745F6F66 
+ 3398      5F746F74 
+ 3398      616C5F74 
+ 3398      696D6500 
+ 3399              	.LASF36:
+ 3400 02fc 73776974 		.ascii	"switch_count_of_total_time\000"
+ 3400      63685F63 
+ 3400      6F756E74 
+ 3400      5F6F665F 
+ 3400      746F7461 
+ 3401              	.LASF23:
+ 3402 0317 74696D65 		.ascii	"time_min\000"
+ 3402      5F6D696E 
+ 3402      00
+ 3403              	.LASF26:
+ 3404 0320 73776974 		.ascii	"switch_count_of_time_per_cycle_of_fork\000"
+ 3404      63685F63 
+ 3404      6F756E74 
+ 3404      5F6F665F 
+ 3404      74696D65 
+ 3405              	.LASF32:
+ 3406 0347 62757474 		.ascii	"button_mode\000"
+ 3406      6F6E5F6D 
+ 3406      6F646500 
+ 3407              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160919 (release) [ARM/embedded-5-bran
+ARM GAS  /tmp/cciGZpl2.s 			page 71
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+     /tmp/cciGZpl2.s:57     .data:00000000 SW_REGS
+     /tmp/cciGZpl2.s:54     .data:00000000 $d
+     /tmp/cciGZpl2.s:63     .data:00000004 OUT_REGS
+     /tmp/cciGZpl2.s:66     .text:00000000 $t
+     /tmp/cciGZpl2.s:71     .text:00000000 write_out
+     /tmp/cciGZpl2.s:102    .text:0000001c $d
+     /tmp/cciGZpl2.s:106    .text:00000020 $t
+     /tmp/cciGZpl2.s:111    .text:00000020 read_out
+     /tmp/cciGZpl2.s:129    .text:0000002c $d
+     /tmp/cciGZpl2.s:133    .text:00000030 $t
+     /tmp/cciGZpl2.s:138    .text:00000030 read_switches
+     /tmp/cciGZpl2.s:164    .text:00000048 $d
+     /tmp/cciGZpl2.s:168    .text:0000004c $t
+     /tmp/cciGZpl2.s:173    .text:0000004c delay_1s
+     /tmp/cciGZpl2.s:225    .text:00000078 distance
+     /tmp/cciGZpl2.s:270    .text:000000b0 $d
+     /tmp/cciGZpl2.s:274    .text:000000b4 $t
+     /tmp/cciGZpl2.s:279    .text:000000b4 timer
+     /tmp/cciGZpl2.s:335    .text:00000100 $d
+     /tmp/cciGZpl2.s:341    .text:0000010c $t
+     /tmp/cciGZpl2.s:346    .text:0000010c rpm
+     /tmp/cciGZpl2.s:395    .text:00000144 $d
+     /tmp/cciGZpl2.s:399    .text:00000148 $t
+     /tmp/cciGZpl2.s:404    .text:00000148 current_speed_function
+     /tmp/cciGZpl2.s:487    .text:000001c0 $d
+     /tmp/cciGZpl2.s:494    .text:000001d0 $t
+     /tmp/cciGZpl2.s:499    .text:000001d0 main
+     /tmp/cciGZpl2.s:846    .rodata:00000000 $d
+     /tmp/cciGZpl2.s:1094   .text:00000574 $d
+     /tmp/cciGZpl2.s:1099   .text:00000580 $t
+     /tmp/cciGZpl2.s:1740   .text:000009bc $d
+     /tmp/cciGZpl2.s:1744   .text:000009c4 $t
+     /tmp/cciGZpl2.s:2320   .text:00000d84 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_idiv
