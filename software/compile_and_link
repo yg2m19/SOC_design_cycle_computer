@@ -1,0 +1,15 @@
+#! /bin/sh
+
+# add the ARM gnu cros-compilers to the search path
+export PATH=/opt/cad/soft/arm/gcc/bin:$PATH
+
+# compile and link the C files to create an Intel format hex file
+make
+
+set -x #echo on
+
+# convert the Intel format hex file to a 4 byte per line format for $readmemh
+/opt/cad/bim/c/hex2v/hex2v_arm test_designstart.hex 4 > code.hex
+
+# now create assign statements which might be used for rom synthesis
+/opt/cad/bim/c/hex2v/hex2v_arm test_designstart.hex 4 memory > code.vmem
